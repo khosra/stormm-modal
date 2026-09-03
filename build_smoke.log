@@ -1,0 +1,21 @@
+✓ Initialized. View run at 
+https://modal.com/apps/toposbio/main/ap-xDGvXyHoK334UO1GE2zyxm
+Building image im-RuV6IaqsUsSqN34kB93K4s
+
+=> Step 0: FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
+Getting image source signatures
+Copying blob sha256:312a542960e3345001fc709156a5139ff8a1d8cc21a51a50f83e87ec2982f579
+Copying blob sha256:3c645031de2917ade93ec54b118d5d3e45de72ef580b8f419a8cdc41e01d042c
+Copying blob sha256:0d6448aff88945ea46a37cfe4330bdb0ada228268b80da6258a0fec63086f404
+Copying blob sha256:fd9cc1ad8dee47ca559003714d462f4eb79cb6315a2708927c240b84d022b55f
+Copying blob sha256:b71b637b97c5efb435b9965058ad414f07afa99d320cf05e89f10441ec1becf4
+Copying blob sha256:47b8539d532f561cac6d7fb8ee2f46c902b66e4a60b103d19701829742a0d11e
+Copying blob sha256:83525caeeb359731f869f1ee87a32acdfdd5efb8af4cab06d8f4fdcf1f317daa
+Copying blob sha256:8e79813a7b9d5784bb880ca2909887465549de5183411b24f6de72fab0802bcd
+Copying blob sha256:0a7674e3e8fe69dcd7f1424fa29aa033b32c42269aab46cbe9818f8dd7154754
+Copying blob sha256:56dc8550293751a1604e97ac949cfae82ba20cb2a28e034737bafd7382559609
+Copying blob sha256:ec6d5f6c9ed94d2ee2eeaf048d90242af638325f57696909f1737b3158d838cf
+Copying config sha256:339fcd468f01f8d5fa54c5efdfbedb7006d54e6c53a330d5bbb137ef6269e82f
+Writing manifest to image destination
+Unpacking OCI image
+   • unpacking rootfs ...     

@@ -1,0 +1,92 @@
+# Configuration for the STORMM explicit-solvent validation runs on Modal.
+#
+# Every system listed here ships inside the STORMM repository itself and is already
+# equilibrated, which matters because STORMM cannot energy-minimize under periodic
+# boundary conditions (apps/Dyna/src/simulator.cpp:297).
+
+[build]
+# Pinned so image builds are reproducible. This is main as of 2026-09-03.
+commit = "84e97dbd6a37d9ceb2d5a55c269452b5cfb40120"
+repo = "https://github.com/Psivant/stormm.git"
+# Lovelace. Matches the L40S we run on. Single arch roughly halves nvcc time
+# versus the repo Dockerfile's "80;89".
+gpu_arch = "89"
+cuda_image = "nvidia/cuda:12.4.1-devel-ubuntu22.04"
+make_jobs = 4
+nvcc_threads = 2
+
+[modal]
+gpu = "L40S"
+volume = "stormm-runs"
+app = "stormm-explicit-solvent"
+
+# ---------------------------------------------------------------------------
+# Systems. Atom counts and box dimensions read from the shipped .inpcrd files.
+# ---------------------------------------------------------------------------
+
+[systems.jac]
+label = "JAC"
+topology = "test/Topology/jac.top"
+coordinates = "test/Trajectory/jac.inpcrd"
+atoms = 23558
+box = "61.645 A cube, orthorhombic"
+description = "DHFR in TIP3P water, the standard JAC benchmark"
+
+[systems.ubiquitin]
+label = "UBI"
+topology = "test/Topology/ubiquitin.top"
+coordinates = "test/Trajectory/ubiquitin.inpcrd"
+atoms = 3105
+box = "36.26 A, 109.47 deg truncated octahedron"
+description = "Ubiquitin in explicit water"
+
+[systems.tip3p]
+label = "TIP3P"
+topology = "test/Topology/tip3p.top"
+coordinates = "test/Trajectory/tip3p.inpcrd"
+atoms = 768
+box = "23.37 A, 109.47 deg truncated octahedron"
+description = "Pure TIP3P water box; small enough to stress CellGrid::checkViability at a 9 A cutoff"
+
+# ---------------------------------------------------------------------------
+# Shared molecular-mechanics settings.
+# ---------------------------------------------------------------------------
+
+[dynamics]
+cut = 9.0
+dt = 1.0
+rigid_geom = "on"
+
+[pppm]
+# theme/order/mesh_ticks confirmed against src/Namelists/nml_pppm.cpp.
+# Supplying cut + dsum_tol and omitting ew_coeff makes STORMM derive the Ewald
+# coefficient itself, which avoids the conflict branch at nml_pppm.cpp:84.
+theme = "electrostatic"
+order = 5
+mesh_ticks = 4
+dsum_tol = 1e-5
+
+# ---------------------------------------------------------------------------
+# Phases. Step counts are deliberately short for the first pass.
+# ---------------------------------------------------------------------------
+
+[phases.b]
+description = "One explicit-solvent simulation on one GPU"
+system = "jac"
+replicas = 1
+nstlim = 10000
+ntpr = 500
+ntwx = 2000
+
+[phases.c]
+description = "10+ small explicit-solvent simulations concurrently on one GPU"
+nstlim = 10000
+ntpr = 500
+ntwx = 5000
+# (system, replicas) pairs. The -n 1 controls let us quote the concurrency payoff.
+matrix = [
+    { system = "ubiquitin", replicas = 1 },
+    { system = "ubiquitin", replicas = 12 },
+    { system = "tip3p", replicas = 1 },
+    { system = "tip3p", replicas = 16 },
+]
