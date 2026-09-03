@@ -1,5 +1,19 @@
 ✓ Initialized. View run at 
-https://modal.com/apps/toposbio/main/ap-6K8eVqINv5Fa0s18z4gTDT
+https://modal.com/apps/toposbio/main/ap-ynvKaG4GILIJJpXmCHS9Cd
 ✓ Created objects.
 ├── 🔨 Created mount /Users/amir/Documents/Github/stormm-modal/ligand_match.py
 └── 🔨 Created function find_ligands.
+scanned 9994 ligand dirs; matched 10/10
+  p000000  DXSJLJXOLZJGBJ-UHFFFAOYSA-N  charge=-1  frcmod=yes
+  p000001  DTJJMNAKJOHXJS-UHFFFAOYSA-N  charge=0  frcmod=yes
+  p000002  JTZAGVRGXFNVKW-OALUTQOASA-N  charge=0  frcmod=yes
+  p000003  BVVAQTMVYPTPHD-UHFFFAOYSA-N  charge=-1  frcmod=yes
+  p000004  OEUPEPPKPAUKKM-KFKXDGILSA-N  charge=0  frcmod=yes
+  p000005  AUHQHUOMOOXCCI-UHFFFAOYSA-N  charge=0  frcmod=yes
+  p000006  GDUZGWLRFMMMPT-UHFFFAOYSA-N  charge=0  frcmod=yes
+  p000007  ORAHYQIDNUUGMP-LJQANCHMSA-N  charge=-1  frcmod=yes
+  p000008  XKMOUEQYOOCLLN-UHFFFAOYSA-N  charge=-1  frcmod=yes
+  p000009  AZSIJVAGQDNGOK-UHFFFAOYSA-N  charge=-1  frcmod=yes
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/toposbio/main/ap-ynvKaG4GILIJJpXmCHS9Cd

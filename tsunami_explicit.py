@@ -40,7 +40,10 @@ prep_image = (
         "ambertools=23.6", "openmm=8.1.1", "parmed=4.2.2", "numpy<2",
         channels=["conda-forge"],
     )
+    # stormm_modal reads runs.toml at import time, so any image that carries the
+    # module must also carry the file, or the container dies during import.
     .add_local_python_source("stormm_modal")
+    .add_local_file("runs.toml", "/root/runs.toml")
 )
 
 PAD_A = 10.0          # solvent padding beyond the solute, per side
@@ -98,15 +101,14 @@ def prep_and_equilibrate(pair_id: str, pdb_text: str, mol2_text: str,
 
     # Protein-only PDB; the ligand comes back in via its own mol2 so it keeps the
     # GAFF types and AM1-BCC charges that were computed for the original campaign.
+    # Counterions are added after solvation with a count of 0, which tells tleap to
+    # add exactly enough to neutralize -- adding them before solvation would place
+    # them in vacuum. net_charge is carried through for reporting/verification only.
     prot = [l for l in pdb_text.splitlines()
             if l.startswith(("ATOM", "HETATM")) and l[17:20].strip() != "LIG"]
     (work / "prot.pdb").write_text("\n".join(prot) + "\nEND\n")
     (work / "lig.mol2").write_text(retype_mol2_coords(mol2_text, pdb_text))
     (work / "lig.frcmod").write_text(frcmod_text)
-
-    ion = "Na+" if net_charge < 0 else "Cl-"
-    n_ion = abs(int(net_charge))
-    addions = f"addIons2 sys {ion} {n_ion}\n" if n_ion else ""
 
     (work / "tleap.in").write_text(f"""source leaprc.protein.ff14SB
 source leaprc.gaff2
@@ -115,8 +117,9 @@ loadamberparams {work}/lig.frcmod
 LIG = loadmol2 {work}/lig.mol2
 prot = loadpdb {work}/prot.pdb
 sys = combine {{ prot LIG }}
-{addions}solvateBox sys TIP3PBOX {PAD_A} iso
-addIonsRand sys Na+ 0 Cl- 0
+solvateBox sys TIP3PBOX {PAD_A} iso
+addIonsRand sys Na+ 0
+addIonsRand sys Cl- 0
 saveAmberParm sys {work}/system.prmtop {work}/system.inpcrd
 quit
 """)

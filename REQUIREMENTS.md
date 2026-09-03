@@ -261,6 +261,74 @@ cleanly at 1, 12 and 16 replicas, conserved energy to −0.021 kcal/mol/ns/atom,
 agreed between single and double precision to ~9 significant figures. Whatever broke
 the reciprocal-space step in April is not present in the current release.
 
+## Pilot: 10 real Tsunami systems in explicit solvent
+
+Ran end to end on one L40S. ff14SB + GAFF2 + TIP3P (first pass; a99SB-disp + TIP4P-D
+still to source). Ligand parameters reused from `tsunami-ligands` — the campaign's own
+`.mol2` + `.frcmod`, with the docked pose transferred by atom name — so the chemistry
+matches the implicit runs. tleap solvates, OpenMM minimizes/heats/NPT-equilibrates,
+STORMM does production with PME and `ntt=2`.
+
+**All 10 succeeded.** Every system equilibrated to 297.7–301.8 K in OpenMM, then ran in
+STORMM with post-thermalization energy drift of **+0.0072 to +0.0235 kcal/mol/ns/atom**
+(mean +0.014), comparable to the JAC NVE reference of −0.021. Temperature held steady
+within each run (sd 0.6–2.4 K).
+
+| System | Atoms | ns/day | Drift (kcal/mol/ns/atom) |
+|---|---|---|---|
+| p000003 | 31,272 | 320.0 | +0.0139 |
+| p000005 | 33,773 | 281.4 | +0.0072 |
+| p000000 | 42,727 | 265.8 | +0.0235 |
+| p000007 | 45,987 | 257.1 | +0.0168 |
+| p000001 | 46,137 | 290.9 | +0.0144 |
+| p000002 | 60,595 | 226.2 | +0.0177 |
+| p000004 | 63,118 | 211.2 | +0.0147 |
+| p000008 | 88,220 | 179.6 | +0.0130 |
+| p000006 | 102,206 | 158.5 | +0.0132 |
+| p000009 | 152,342 | 113.2 | +0.0096 |
+
+Mean 66,637 atoms and 230 ns/day per system.
+
+### The cost of a like-for-like rebuild
+
+The solutes are 472–848 atoms. Solvated they are **31k–152k atoms**, because extended
+IDR conformations (43–83 Å across) force large boxes — volume scales as extent³ while
+the solute does not. This is the dominant cost, and it is far worse than the 3.28×
+implicit-to-explicit ratio measured on a compact small molecule.
+
+    97,000 systems x 4 rungs x 20 ns = 7,760,000 ns
+    at 230 ns/day/GPU  ->  33,700 GPU-days  =  92 GPU-years
+
+That is not a schedulable number, so a full like-for-like rebuild is off the table and
+the question becomes which axis to cut:
+
+| Scope | GPU-days |
+|---|---|
+| Full: 97k x 4 rungs x 20 ns | 33,700 |
+| Single temperature, 20 ns | 8,420 |
+| Single temperature, 5 ns | 2,105 |
+| 10k subset, 1 temp, 5 ns | 217 |
+| 1k subset, 1 temp, 20 ns | 87 |
+
+Three things make this less bleak than it looks:
+
+1. **The 4 rungs may be moot anyway.** STORMM has no REMD under periodic boundaries, so
+   the ladder is unavailable regardless — which removes a 4× factor but also removes the
+   enhanced sampling that motivated it.
+2. **Boxes are oversized.** `solvateBox ... iso` builds a cube that contains the solute
+   under any rotation. Aligning principal axes first, or dropping `iso`, should cut atom
+   counts substantially — plausibly ~2×, which roughly doubles throughput.
+3. **Batching is untested at this size.** STORMM ran 16 small replicas for +9.6% wall
+   time, but these systems are 30–150k atoms and only a few fit per card. The pilot ran
+   one system per GPU; measuring 2–4 concurrent is the obvious next experiment.
+
+### Known gap in the pilot
+
+ParmEd wrote positions only, so STORMM started production without velocities and spent
+the first ~250 steps rethermalizing. Harmless for a throughput measurement, and the
+reported drift excludes it, but for production the equilibrated velocities should be
+carried across so trajectories continue rather than restart.
+
 ## The sampling method, not just the solvent model, is at risk
 
 The `tsunami-sims-v2b` volume stores trajectories at **300 / 316 / 332 / 350 K** per

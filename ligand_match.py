@@ -52,32 +52,39 @@ def mol2_fingerprint(text: str):
               cpu=4.0, timeout=1800)
 def find_ligands(targets: list) -> dict:
     """targets: [{pair_id, formula, names:[...]}] -> {pair_id: {inchikey, mol2, frcmod}}"""
+    # Reads go over a network volume mount, so this is latency-bound, not CPU-bound:
+    # a serial walk of ~10k ligands did not finish in 14 minutes. Fan out with threads.
+    from concurrent.futures import ThreadPoolExecutor
+
     want = {(t["formula"], tuple(t["names"])): t["pair_id"] for t in targets}
-    found = {}
     root = pathlib.Path("/ligands/ligands")
-    scanned = 0
-    for d in root.iterdir():
-        if not d.is_dir() or len(found) == len(want):
-            continue
+    dirs = [d for d in root.iterdir() if d.is_dir()]
+
+    def probe(d):
         m = d / f"{d.name}.mol2"
-        if not m.exists():
-            continue
-        scanned += 1
         try:
             fp = mol2_fingerprint(m.read_text())
         except Exception:
-            continue
-        if fp in want:
-            pid = want[fp]
-            frc = d / f"{d.name}.frcmod"
-            meta = d / "meta.json"
-            found[pid] = {
-                "inchikey": d.name,
-                "mol2": m.read_text(),
-                "frcmod": frc.read_text() if frc.exists() else "",
-                "meta": json.loads(meta.read_text()) if meta.exists() else {},
-            }
-    return {"scanned": scanned, "found": found}
+            return None
+        pid = want.get(fp)
+        if pid is None:
+            return None
+        frc = d / f"{d.name}.frcmod"
+        meta = d / "meta.json"
+        return pid, {
+            "inchikey": d.name,
+            "mol2": m.read_text(),
+            "frcmod": frc.read_text() if frc.exists() else "",
+            "meta": json.loads(meta.read_text()) if meta.exists() else {},
+        }
+
+    found, scanned = {}, 0
+    with ThreadPoolExecutor(max_workers=64) as ex:
+        for res in ex.map(probe, dirs):
+            scanned += 1
+            if res is not None:
+                found[res[0]] = res[1]
+    return {"scanned": scanned, "total_dirs": len(dirs), "found": found}
 
 
 @app.local_entrypoint()

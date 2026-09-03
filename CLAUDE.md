@@ -33,6 +33,9 @@ patches upstream.
   level *and* shipped into the image via `.add_local_file("runs.toml", "/root/runs.toml")`
   — remotely `__file__` is `/root/stormm_modal.py`, so `HERE` resolves to `/root`.
   Omitting that file is a `FileNotFoundError` at container import, not at call time.
+  This is transitive: **any** image that carries `stormm_modal` via
+  `add_local_python_source` must also `add_local_file("runs.toml", ...)`, because the
+  module reads it at import. It bit both the STORMM image and the AmberTools image.
 - Beyond that, per-run values are resolved in `local_entrypoint`s and passed to remote
   functions as plain dicts, so remote functions never re-read config themselves.
 
