@@ -1,0 +1,71 @@
+✓ Initialized. View run at 
+https://modal.com/apps/toposbio/main/ap-FRj4wtkiP5FyeQuUppgtzz
+✓ Created objects.
+├── 🔨 Created mount /Users/amir/Documents/Github/stormm-modal/stormm_modal.py
+├── 🔨 Created mount runs.toml
+├── 🔨 Created function smoke.
+└── 🔨 Created function run_dynamics.
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.4.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.4.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.4.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+
+
+==============================================================================
+run                                  rc    wall_s  peak_MiB
+------------------------------------------------------------------------------
+ubiquitin-n1                          0       3.0       570
+ubiquitin-n12                         0       4.6       622
+tip3p-n1                              0       2.5       564
+tip3p-n16                             0       2.6       578
+tip4p-n1                              0       2.7       564
+tip4p-n12                             0       3.4       576
+==============================================================================
+
+Concurrency payoff (wall time for N replicas vs 1):
+  ubiquitin    n=1:     3.0s   n=12:     4.6s   effective speedup vs serial:  7.93x
+  tip3p        n=1:     2.5s   n=16:     2.6s   effective speedup vs serial: 15.14x
+  tip4p        n=1:     2.7s   n=12:     3.4s   effective speedup vs serial:  9.79x
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/toposbio/main/ap-FRj4wtkiP5FyeQuUppgtzz
