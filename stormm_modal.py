@@ -215,9 +215,16 @@ def smoke(ctest_regex: str = "") -> dict:
 
     out = {}
     out["nvidia_smi"] = run("nvidia-smi")
-    # Confirm real sm_89 SASS is embedded rather than a silent PTX JIT fallback.
+    # Confirm real sm_89 SASS is present rather than a silent PTX JIT fallback.
+    # The device code is NOT in the executable -- dynamics.stormm.cuda is a ~250 KB
+    # driver that links against the CUDA object library, so cuobjdump has to be
+    # pointed at the library or it reports "does not contain device code".
+    out["libs"] = run(f"find {STORMM_BUILD} -name '*.so*' -o -name '*.a' | head -20")
     out["sass"] = run(
-        f"/usr/local/cuda/bin/cuobjdump --list-elf {DYNA} | head -20"
+        "for f in $(find %s -name 'libstormm*' | head -3); do"
+        "  echo \"== $f\";"
+        "  /usr/local/cuda/bin/cuobjdump --list-elf \"$f\" 2>&1 | head -6;"
+        "done" % STORMM_BUILD
     )
     out["binaries"] = run(f"ls -la {STORMM_BUILD}/apps/*/")
     out["help"] = run(f"{DYNA} --help 2>&1 | head -40")

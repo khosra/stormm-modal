@@ -1,5 +1,5 @@
 ✓ Initialized. View run at 
-https://modal.com/apps/toposbio/main/ap-yILWxMXzlizLI9Owihrylj
+https://modal.com/apps/toposbio/main/ap-Jzh7dZnczsmWG8gMsvNvuv
 ✓ Created objects.
 ├── 🔨 Created mount /Users/amir/Documents/Github/stormm-modal/stormm_modal.py
 ├── 🔨 Created mount runs.toml
@@ -24,7 +24,7 @@ A copy of this license is made available in this container at /NGC-DL-CONTAINER-
 ==============================================================================
 ## nvidia_smi  (rc=0)
 ==============================================================================
-Thu Sep  3 18:55:10 2026       
+Thu Sep  3 18:56:38 2026       
 +-----------------------------------------------------------------------------------------+
 | NVIDIA-SMI 580.95.05              Driver Version: 580.95.05      CUDA Version: 13.0     |
 +-----------------------------------------+------------------------+----------------------+
@@ -32,8 +32,8 @@ Thu Sep  3 18:55:10 2026
 | Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
 |                                         |                        |               MIG M. |
 |=========================================+========================+======================|
-|   0  NVIDIA L40S                    On  |   00000000:38:00.0 Off |                    0 |
-| N/A   44C    P0             62W /  350W |       3MiB /  46068MiB |      0%      Default |
+|   0  NVIDIA L40S                    On  |   00000000:AC:00.0 Off |                    0 |
+| N/A   31C    P8             47W /  350W |       7MiB /  46068MiB |      0%      Default |
 |                                         |                        |                  N/A |
 +-----------------------------------------+------------------------+----------------------+
 
@@ -47,11 +47,21 @@ Thu Sep  3 18:55:10 2026
 
 
 ==============================================================================
+## libs  (rc=0)
+==============================================================================
+/app/stormmbuild/libstormm.so
+
+
+==============================================================================
 ## sass  (rc=0)
 ==============================================================================
-
---- stderr ---
-cuobjdump info    : File '/app/stormmbuild/apps/Dyna/dynamics.stormm.cuda' does not contain device code
+== /app/stormmbuild/libstormm.so
+ELF file    1: libstormm.1.sm_89.cubin
+ELF file    2: libstormm.2.sm_89.cubin
+ELF file    3: libstormm.3.sm_89.cubin
+ELF file    4: libstormm.4.sm_89.cubin
+ELF file    5: libstormm.5.sm_89.cubin
+ELF file    6: libstormm.6.sm_89.cubin
 
 
 ==============================================================================
@@ -222,6 +232,32 @@ Test project /app/stormmbuild
 
 Total Tests: 46
 
+
+==============================================================================
+## ctest_run  (rc=0)
+==============================================================================
+Test project /app/stormmbuild
+    Start 28: test_valence_evaluation
+1/8 Test #28: test_valence_evaluation ..........   Passed    0.30 sec
+    Start 29: test_nonbonded_evaluation
+2/8 Test #29: test_nonbonded_evaluation ........   Passed    0.50 sec
+    Start 30: test_generalized_born
+3/8 Test #30: test_generalized_born ............   Passed    1.33 sec
+    Start 31: test_neighbor_list
+4/8 Test #31: test_neighbor_list ...............   Passed    4.56 sec
+    Start 32: test_pme
+5/8 Test #32: test_pme .........................   Passed   50.48 sec
+    Start 37: test_dynamics
+6/8 Test #37: test_dynamics ....................   Passed   64.59 sec
+    Start 45: test_hpc_dynamics
+7/8 Test #45: test_hpc_dynamics ................   Passed   17.86 sec
+    Start 46: test_hpc_synthesis
+8/8 Test #46: test_hpc_synthesis ...............   Passed    1.28 sec
+
+100% tests passed, 0 tests failed out of 8
+
+Total Test time (real) = 140.90 sec
+
 Stopping app - local entrypoint completed.
 ✓ App completed. View run at 
-https://modal.com/apps/toposbio/main/ap-yILWxMXzlizLI9Owihrylj
+https://modal.com/apps/toposbio/main/ap-Jzh7dZnczsmWG8gMsvNvuv
