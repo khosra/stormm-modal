@@ -50,6 +50,19 @@ results_vol = modal.Volume.from_name(_MODAL["volume"], create_if_missing=True)
 stormm_image = (
     modal.Image.from_registry(_BUILD["cuda_image"], add_python="3.12")
     .apt_install("git", "cmake", "g++", "libeigen3-dev", "ca-certificates")
+    # These must be set BEFORE cmake configures, because cmake bakes CXXFLAGS into
+    # its cache. STORMM's plain-C++ translation units include cuda_runtime.h and are
+    # compiled by g++, not nvcc, so without the CUDA include path on CXXFLAGS the
+    # build dies at src/Accelerator/hybrid.h. The repo's own Dockerfile:28-30 sets
+    # exactly these; dropping them is what broke the first build attempt.
+    .env(
+        {
+            "CUDADIR": "/usr/local/cuda",
+            "CUDACXX": "/usr/local/cuda/bin/nvcc",
+            "CXXFLAGS": "-I/usr/local/cuda/include",
+            "LDFLAGS": "-L/usr/local/cuda/lib64",
+        }
+    )
     .run_commands(
         f"git clone {_BUILD['repo']} {STORMM_SRC}",
         f"cd {STORMM_SRC} && git checkout {_BUILD['commit']}",
@@ -60,6 +73,8 @@ stormm_image = (
             " -DSTORMM_ENABLE_RDKIT=NO"
             f" -DCUSTOM_GPU_ARCH={_BUILD['gpu_arch']}"
             f" -DCUSTOM_NVCC_THREADS={_BUILD['nvcc_threads']}"
+            " -DCMAKE_CXX_FLAGS=-I/usr/local/cuda/include"
+            " -DCMAKE_EXE_LINKER_FLAGS=-L/usr/local/cuda/lib64"
         ),
         f"cmake --build {STORMM_BUILD} -j {_BUILD['make_jobs']}",
     )
@@ -94,37 +109,55 @@ def build_deck(
     replicas: int,
     thermostat: int,
     precision: str,
-    temperatures: list | None = None,
+    igb: int = 0,
 ) -> str:
     """Render a STORMM namelist input deck.
 
-    Follows the shape of apps/Dyna/test/JacTest.sh, with an explicit &pppm block
-    so the Ewald settings are recorded in the run rather than left to defaults.
+    Two shapes, following the two driver scripts that ship with STORMM:
+
+    - Periodic / explicit solvent, after apps/Dyna/test/JacTest.sh: a real-space
+      `cut` in &dynamics plus an explicit &pppm block, so the Ewald settings are
+      recorded in the run rather than left to defaults.
+    - Isolated / implicit solvent, after apps/Dyna/test/AminoAcidTest.sh: no cutoff
+      and no &pppm, with a &solvent block naming the Generalized Born model.
+
+    igb=8 is NECK_GB_II, i.e. GB-Neck2 (src/Topology/atomgraph_enumerators.h:147).
     """
+    periodic = bool(system.get("periodic", True))
+    if periodic and igb:
+        raise ValueError(
+            f"{system['label']}: Generalized Born is an isolated-boundary model and "
+            "cannot be combined with a periodic unit cell"
+        )
+
     label = system["label"]
     top = f"{STORMM_SRC}/{system['topology']}"
     crd = f"{STORMM_SRC}/{system['coordinates']}"
 
-    temp_lines = ""
+    temp_line = ""
     if thermostat != 0:
-        if temperatures:
-            # Distinct starting temperatures per replica label break the degeneracy
-            # of replicas that all start from the same coordinates, which is how we
-            # confirm they are genuinely independent trajectories. This per-label
-            # form follows apps/Dyna/test/AminoAcidTest.sh.
-            for lbl, tempi, temp0 in temperatures:
-                temp_lines += (
-                    f"  temperature = {{ tempi {tempi:.1f}, temp0 {temp0:.1f},"
-                    f" -label {lbl} }},\n"
-                )
-        else:
-            temp_lines = (
-                f"  temperature = {{ tempi 300.0, temp0 300.0, -label {label} }},\n"
-            )
+        temp_line = f"  temperature = {{ tempi 300.0, temp0 300.0, -label {label} }},\n"
+
+    if periodic:
+        cut_line = f"  cut = {dynamics['cut']},\n"
+        # 1e-05 is not a form the Amber-style namelist reader is guaranteed to take.
+        dsum_tol_str = f"{pppm['dsum_tol']:.1e}".replace("e-0", "e-")
+        solvent_block = f"""&pppm
+  theme {pppm['theme']},
+  order {pppm['order']},
+  cut {dynamics['cut']},
+  dsum_tol {dsum_tol_str},
+  mesh_ticks {pppm['mesh_ticks']},
+&end
+"""
+    else:
+        cut_line = ""
+        solvent_block = f"""&solvent
+  igb = {igb},
+&end
+"""
 
     energy_lines = "\n".join(f"  energy {term}," for term in ENERGY_TERMS)
-    # 1e-05 is not a form the Amber-style namelist reader is guaranteed to take.
-    dsum_tol_str = f"{pppm['dsum_tol']:.1e}".replace("e-0", "e-")
 
     return f"""&files
   -sys {{ -p {top}
@@ -137,19 +170,11 @@ def build_deck(
 
 &dynamics
   nstlim = {nstlim},  ntpr = {ntpr},  ntwx = {ntwx},  dt = {dynamics['dt']},
-  cut = {dynamics['cut']},
-  ntt = {thermostat},
+{cut_line}  ntt = {thermostat},
   rigid_geom {dynamics['rigid_geom']},
-{temp_lines}&end
+{temp_line}&end
 
-&pppm
-  theme {pppm['theme']},
-  order {pppm['order']},
-  cut {dynamics['cut']},
-  dsum_tol {dsum_tol_str},
-  mesh_ticks {pppm['mesh_ticks']},
-&end
-
+{solvent_block}
 &precision
   nonbonded {precision},
   valence {precision},
@@ -384,3 +409,43 @@ def phase_c(nstlim: int = 0):
                 f"n={n}: {many['wall_seconds']:7.1f}s   "
                 f"effective speedup vs serial: {speedup:5.2f}x"
             )
+
+
+@app.local_entrypoint()
+def phase_gb(nstlim: int = 0):
+    """Implicit (GB-Neck2) vs explicit solvent cost on identical hardware.
+
+    Motivated by the Tsunami workload: IDR + small-molecule data generation that
+    runs in implicit solvent today and wants to move to explicit. symmetry_C1 and
+    symmetry_C1_in_water are the same solute, so that pair gives a clean ratio.
+    """
+    cfg = load_config()
+    ph = cfg["phases"]["gb"]
+    steps = nstlim or ph["nstlim"]
+    n = ph["replicas"]
+
+    jobs = []
+    for entry in ph["matrix"]:
+        system = cfg["systems"][entry["system"]]
+        igb = entry["igb"]
+        tag = f"gb{igb}" if igb else "explicit"
+        jobs.append((
+            f"{entry['system']}-{tag}-n{n}",
+            build_deck(system, cfg["dynamics"], cfg["pppm"], steps, ph["ntpr"],
+                       ph["ntwx"], replicas=n, thermostat=3, precision="single",
+                       igb=igb),
+        ))
+
+    results = list(run_dynamics.starmap([(name, deck) for name, deck in jobs]))
+    _report(results)
+
+    by_name = {r["run_name"]: r for r in results}
+    dry = by_name.get(f"symmetry_C1-gb8-n{n}")
+    wet = by_name.get(f"symmetry_C1_in_water-explicit-n{n}")
+    if dry and wet and dry["returncode"] == 0 and wet["returncode"] == 0:
+        print(
+            f"\nSame-solute cost of explicit solvent (symmetry_C1, {n} replicas):\n"
+            f"  implicit GB-Neck2 (22 atoms):   {dry['wall_seconds']:7.1f}s\n"
+            f"  explicit water   (496 atoms):   {wet['wall_seconds']:7.1f}s\n"
+            f"  explicit / implicit:            {wet['wall_seconds'] / dry['wall_seconds']:6.2f}x"
+        )

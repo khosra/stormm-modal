@@ -30,6 +30,7 @@ topology = "test/Topology/jac.top"
 coordinates = "test/Trajectory/jac.inpcrd"
 atoms = 23558
 box = "61.645 A cube, orthorhombic"
+periodic = true
 description = "DHFR in TIP3P water, the standard JAC benchmark"
 
 [systems.ubiquitin]
@@ -38,6 +39,7 @@ topology = "test/Topology/ubiquitin.top"
 coordinates = "test/Trajectory/ubiquitin.inpcrd"
 atoms = 3105
 box = "36.26 A, 109.47 deg truncated octahedron"
+periodic = true
 description = "Ubiquitin in explicit water"
 
 [systems.tip3p]
@@ -46,7 +48,35 @@ topology = "test/Topology/tip3p.top"
 coordinates = "test/Trajectory/tip3p.inpcrd"
 atoms = 768
 box = "23.37 A, 109.47 deg truncated octahedron"
+periodic = true
 description = "Pure TIP3P water box; small enough to stress CellGrid::checkViability at a 9 A cutoff"
+
+[systems.gly_arg]
+label = "GlyArg"
+topology = "test/Namelists/topol/gly_arg.top"
+coordinates = "test/Namelists/coord/gly_arg.inpcrd"
+atoms = 43
+box = "none, isolated boundary conditions"
+periodic = false
+description = "Gly-Arg dipeptide. The implicit-solvent case AminoAcidTest.sh drives with igb=8; stands in for the IDR-like peptides in the Tsunami workload"
+
+[systems.symmetry_C1]
+label = "SymC1"
+topology = "test/Topology/symmetry_C1.top"
+coordinates = "test/Trajectory/symmetry_C1.inpcrd"
+atoms = 22
+box = "none, isolated boundary conditions"
+periodic = false
+description = "Small molecule, dry. Same solute as symmetry_C1_in_water, so the pair gives a same-solute implicit-vs-explicit cost ratio"
+
+[systems.symmetry_C1_in_water]
+label = "SymC1Wat"
+topology = "test/Topology/symmetry_C1_in_water.top"
+coordinates = "test/Trajectory/symmetry_C1_in_water.inpcrd"
+atoms = 496
+box = "22.87 x 22.31 x 19.84 A, orthorhombic"
+periodic = true
+description = "The symmetry_C1 solute in explicit water"
 
 # ---------------------------------------------------------------------------
 # Shared molecular-mechanics settings.
@@ -89,4 +119,17 @@ matrix = [
     { system = "ubiquitin", replicas = 12 },
     { system = "tip3p", replicas = 1 },
     { system = "tip3p", replicas = 16 },
+]
+
+[phases.gb]
+description = "Implicit (GB-Neck2, igb=8) vs explicit solvent cost on identical hardware. Motivated by the Tsunami workload, which today generates IDR + small-molecule data in implicit solvent and wants to move to explicit."
+nstlim = 10000
+ntpr = 500
+ntwx = 5000
+igb = 8
+replicas = 16
+matrix = [
+    { system = "gly_arg", igb = 8 },
+    { system = "symmetry_C1", igb = 8 },
+    { system = "symmetry_C1_in_water", igb = 0 },
 ]
