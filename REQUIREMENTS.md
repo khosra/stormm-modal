@@ -189,7 +189,77 @@ No tag, no commit, no `--branch`. The STORMM version is therefore whatever `main
 **on the day the image was built**. Built July 2025, that is v0.2.0-era main:
 no PME in the MD loop. Explicit solvent was not available to that campaign.
 
+Vintage barely matters here, because **`main` was frozen for fourteen months**: it sat
+at `3eeccbd` (2025-06-18) until `84e97db` (2026-08-31). Any clone of
+`psivant/stormm` main taken between those dates — July 2025 or July 2026 alike —
+produced the same tree, with zero `PMIGrid` references in the dynamics driver. So no
+Tsunami-era build of the public repo could do explicit solvent.
+
 For the rebuild, pin the commit. `runs.toml` in this repo does.
+
+## What the Tsunami campaign actually ran
+
+Read directly from `tsunami-sims-v2b`, `/results/p000/p000000/metadata.json`:
+
+    ladder_temps_K      [300.0, 315.818, 332.47, 350.0]    n_rungs 4
+    remd_swap_steps     10000
+    n_steps             10000000        dt_fs 2.0      -> 20 ns per replica
+    ntwx                10000                          -> 1000 frames
+    igb                 5               gbsa 0
+    restrain_radius_a   66.62           restrain_radius_base_a 40.0
+    transfer 0          ligand_transfer 0
+
+Note **`igb = 5`** (OBC-GB-II), not `igb = 8` (GB-Neck2). Anything downstream that
+assumes GB-Neck2 — model cards, dataset documentation, the `constants.py` comment in
+`tp2-partstruct` — is describing a different solvent model than the data was generated
+with. Worth correcting at the source.
+
+Layout is `results/pNNN/pNNNNNN/` with `T{300,316,332,350}.{nc,csv}`, `metadata.json`
+and `topology.pdb` per system, plus a `results/_done` marker.
+
+### The data is sound — the Langevin concern does not apply to it
+
+Each `T*.csv` records `inst_temp_K` per frame, so this is checkable directly rather
+than by proxy:
+
+| Rung | Setpoint | Measured mean | sd |
+|---|---|---|---|
+| T300 | 300 K | **298.8 K** | 13.4 |
+| T350 | 350 K | **348.1 K** | 21.5 |
+
+No drift (first decile 300.8 K, last decile 297.6 K), and all four `walker_id` values
+appear in each rung's file, so replica exchange was genuinely swapping. **The Tsunami
+trajectories are correctly thermostatted.** The Langevin energy-sink bug recorded above
+was measured on v0.3.0 and does not describe this dataset.
+
+## Andre already tried explicit solvent, in April 2026, and it crashed
+
+`stormm-pme-benchmark-artifacts` (2026-04-02/03) holds ~20 timestamped runs of the
+androgen receptor under PME. Run `20260403_062328` is a replica sweep, and all three
+arms died inside the reciprocal-space code:
+
+| Replicas | Failure |
+|---|---|
+| 1 | `runGpuReciprocalPmeStep :: Unable to release reciprocal-space energy scratch on the GPU` |
+| 8 | `hpc_fft :: (executeCuFFTForward) cuFFT call failed with status CUFFT_EXEC_FAILED` |
+| 32 | `hpc_fft :: (executeCuFFTBackward) cuFFT call failed with status CUFFT_EXEC_FAILED` |
+
+This is almost certainly *why* Tsunami is an implicit-solvent dataset: explicit solvent
+was attempted first and did not survive the FFT.
+
+**Those symbols do not exist in Psivant/stormm.** `runGpuReciprocalPmeStep`,
+`executeCuFFTForward` and `executeCuFFTBackward` appear in no branch — not `main`,
+`DSCDev`, `ImprovedCLI` or `temp` — and the public tree's FFT sources are named
+`hpc_fft_stage.cu` with several files still carrying `_wip` suffixes. So the STORMM
+Andre benchmarked in April came from somewhere other than the public repository.
+**Ask him where that build came from**; it changes what "upgrading STORMM" even means.
+
+### The good news
+
+The failure mode he hit is exactly what now works. On v0.3.0, PME with cuFFT ran
+cleanly at 1, 12 and 16 replicas, conserved energy to −0.021 kcal/mol/ns/atom, and
+agreed between single and double precision to ~9 significant figures. Whatever broke
+the reciprocal-space step in April is not present in the current release.
 
 ## The sampling method, not just the solvent model, is at risk
 

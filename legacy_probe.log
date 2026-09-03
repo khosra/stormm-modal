@@ -322,3 +322,305 @@ CPU compilation complete. Memory can be freed.
 [ 61%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_valence_potential_dpmedual.cu.o
 [ 61%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_valence_potential_flg.cu.o
 [ 61%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_valence_potential_fmd.cu.o
+[ 61%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_valence_potential_fpme.cu.o
+[ 62%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_valence_potential_fpmedual.cu.o
+[ 62%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_valence_potential_fsm.cu.o
+[ 62%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_valence_potential_fxl.cu.o
+[ 62%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Random/hpc_random.cu.o
+[ 62%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Structure/hpc_background_mesh.cu.o
+[ 63%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Structure/hpc_rmsd.cu.o
+[ 63%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Structure/hpc_virtual_site_handling.cu.o
+[ 63%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Synthesis/hpc_condensate.cu.o
+[ 63%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Synthesis/hpc_implicit_solvent_workspace.cu.o
+[ 64%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Synthesis/hpc_phasespace_synthesis.cu.o
+[ 64%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Trajectory/hpc_coordinate_copy.cu.o
+[ 64%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Trajectory/hpc_coordinate_graft.cu.o
+[ 64%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Trajectory/hpc_coordinate_swap.cu.o
+[ 65%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Trajectory/hpc_integration.cu.o
+[ 65%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Trajectory/hpc_trim.cu.o
+[ 65%] Built target stormm_cuda_objects
+CUDA compilation complete. Memory can be freed.
+[ 65%] Built target stormm_cuda_complete
+[ 65%] Linking CXX shared library libstormm.so
+[ 65%] Built target stormm
+[ 65%] Building CXX object test/CMakeFiles/test_unit_test.dir/UnitTesting/test_unit_test.cpp.o
+[ 65%] Building CXX object test/CMakeFiles/test_file_management.dir/FileManagement/test_file_management.cpp.o
+[ 65%] Building CXX object test/CMakeFiles/test_parse.dir/Parsing/test_parse.cpp.o
+[ 65%] Building CXX object test/CMakeFiles/test_hybrid.dir/Accelerator/test_hybrid.cpp.o
+[ 65%] Linking CXX executable test_file_management
+[ 65%] Built target test_file_management
+[ 65%] Building CXX object test/CMakeFiles/test_input.dir/Parsing/test_input.cpp.o
+[ 65%] Linking CXX executable test_parse
+[ 65%] Built target test_parse
+[ 66%] Building CXX object test/CMakeFiles/test_output.dir/Parsing/test_output.cpp.o
+[ 67%] Linking CXX executable test_hybrid
+[ 67%] Linking CXX executable test_input
+[ 67%] Linking CXX executable test_unit_test
+[ 67%] Built target test_hybrid
+[ 67%] Building CXX object test/CMakeFiles/test_namelists.dir/Namelists/test_namelists.cpp.o
+[ 67%] Built target test_input
+[ 67%] Building CXX object test/CMakeFiles/test_clustering.dir/Math/test_clustering.cpp.o
+[ 67%] Linking CXX executable test_output
+[ 67%] Built target test_unit_test
+[ 67%] Building CXX object test/CMakeFiles/test_math.dir/Math/test_math.cpp.o
+[ 67%] Built target test_output
+[ 67%] Building CXX object test/CMakeFiles/test_numerics.dir/Math/test_numerics.cpp.o
+[ 67%] Linking CXX executable test_clustering
+[ 67%] Built target test_clustering
+[ 68%] Building CXX object test/CMakeFiles/test_amber_prmtop.dir/Topology/test_amber_prmtop.cpp.o
+[ 69%] Linking CXX executable test_namelists
+[ 69%] Linking CXX executable test_numerics
+[ 69%] Built target test_namelists
+[ 70%] Building CXX object test/CMakeFiles/test_topology_mods.dir/Topology/test_topology_mods.cpp.o
+[ 70%] Built target test_numerics
+[ 70%] Building CXX object test/CMakeFiles/test_amber_coordinates.dir/Trajectory/test_amber_coordinates.cpp.o
+[ 70%] Linking CXX executable test_amber_prmtop
+[ 70%] Built target test_amber_prmtop
+[ 70%] Building CXX object test/CMakeFiles/test_coordinate_graft.dir/Trajectory/test_coordinate_graft.cpp.o
+[ 70%] Linking CXX executable test_topology_mods
+[ 70%] Built target test_topology_mods
+[ 70%] Building CXX object test/CMakeFiles/test_coordinate_swap.dir/Trajectory/test_coordinate_swap.cpp.o
+[ 70%] Linking CXX executable test_amber_coordinates
+[ 70%] Built target test_amber_coordinates
+[ 70%] Building CXX object test/CMakeFiles/test_coordinate_formats.dir/Trajectory/test_coordinate_formats.cpp.o
+[ 71%] Linking CXX executable test_coordinate_graft
+[ 71%] Built target test_coordinate_graft
+[ 71%] Building CXX object test/CMakeFiles/test_chemical_features.dir/Chemistry/test_chemical_features.cpp.o
+[ 72%] Linking CXX executable test_math
+[ 72%] Built target test_math
+[ 72%] Building CXX object test/CMakeFiles/test_atommask.dir/Chemistry/test_atommask.cpp.o
+[ 73%] Linking CXX executable test_chemical_features
+[ 73%] Built target test_chemical_features
+[ 73%] Building CXX object test/CMakeFiles/test_local_arrangement.dir/Structure/test_local_arrangement.cpp.o
+[ 73%] Linking CXX executable test_coordinate_swap
+[ 73%] Built target test_coordinate_swap
+[ 73%] Building CXX object test/CMakeFiles/test_isomerization.dir/Structure/test_isomerization.cpp.o
+[ 73%] Linking CXX executable test_atommask
+[ 73%] Built target test_atommask
+[ 73%] Building CXX object test/CMakeFiles/test_mesh_construction.dir/Structure/test_mesh_construction.cpp.o
+[ 73%] Linking CXX executable test_coordinate_formats
+[ 73%] Built target test_coordinate_formats
+[ 73%] Building CXX object test/CMakeFiles/test_enhanced_sampling.dir/Sampling/test_enhanced_sampling.cpp.o
+[ 74%] Linking CXX executable test_enhanced_sampling
+[ 74%] Built target test_enhanced_sampling
+[ 74%] Building CXX object test/CMakeFiles/test_atomgraph_synthesis.dir/Synthesis/test_atomgraph_synthesis.cpp.o
+[ 74%] Building CXX object test/CMakeFiles/test_atomgraph_synthesis.dir/Synthesis/assemble_restraints.cpp.o
+[ 75%] Linking CXX executable test_atomgraph_synthesis
+[ 75%] Built target test_atomgraph_synthesis
+[ 75%] Building CXX object test/CMakeFiles/test_condensate.dir/Synthesis/test_condensate.cpp.o
+[ 76%] Linking CXX executable test_isomerization
+[ 76%] Built target test_isomerization
+[ 77%] Building CXX object test/CMakeFiles/test_small_molecules.dir/Synthesis/test_small_molecules.cpp.o
+[ 77%] Linking CXX executable test_small_molecules
+[ 77%] Built target test_small_molecules
+[ 77%] Building CXX object test/CMakeFiles/test_synthesis.dir/Synthesis/test_synthesis.cpp.o
+[ 77%] Linking CXX executable test_local_arrangement
+[ 77%] Built target test_local_arrangement
+[ 77%] Linking CXX executable test_mesh_construction
+[ 78%] Building CXX object test/CMakeFiles/test_valence_evaluation.dir/Potential/test_valence_evaluation.cpp.o
+[ 78%] Built target test_mesh_construction
+[ 78%] Building CXX object test/CMakeFiles/test_nonbonded_evaluation.dir/Potential/test_nonbonded_evaluation.cpp.o
+[ 78%] Linking CXX executable test_synthesis
+[ 78%] Built target test_synthesis
+[ 79%] Building CXX object test/CMakeFiles/test_generalized_born.dir/Potential/test_generalized_born.cpp.o
+[ 80%] Linking CXX executable test_condensate
+[ 80%] Built target test_condensate
+[ 80%] Building CXX object test/CMakeFiles/test_neighbor_list.dir/Potential/test_neighbor_list.cpp.o
+[ 81%] Linking CXX executable test_nonbonded_evaluation
+[ 81%] Built target test_nonbonded_evaluation
+[ 81%] Building CXX object test/CMakeFiles/test_pme.dir/Potential/test_pme.cpp.o
+[ 81%] Linking CXX executable test_valence_evaluation
+[ 81%] Built target test_valence_evaluation
+[ 81%] Building CXX object test/CMakeFiles/test_display.dir/Reporting/test_display.cpp.o
+[ 81%] Linking CXX executable test_neighbor_list
+[ 81%] Built target test_neighbor_list
+[ 82%] Building CXX object test/CMakeFiles/test_progressbar.dir/Reporting/test_progressbar.cpp.o
+[ 82%] Linking CXX executable test_progressbar
+[ 82%] Built target test_progressbar
+[ 82%] Building CXX object test/CMakeFiles/test_restraints.dir/Restraints/test_restraints.cpp.o
+[ 83%] Linking CXX executable test_display
+[ 83%] Linking CXX executable test_generalized_born
+[ 83%] Built target test_display
+[ 83%] Building CXX object test/CMakeFiles/test_dynamics.dir/MolecularMechanics/test_dynamics.cpp.o
+[ 83%] Built target test_generalized_born
+[ 83%] Building CXX object test/CMakeFiles/test_minimization.dir/MolecularMechanics/test_minimization.cpp.o
+[ 84%] Linking CXX executable test_minimization
+[ 84%] Built target test_minimization
+[ 84%] Building CXX object test/CMakeFiles/test_molecule_formats.dir/MoleculeFormat/test_molecule_formats.cpp.o
+[ 84%] Linking CXX executable test_molecule_formats
+[ 84%] Built target test_molecule_formats
+[ 84%] Building CXX object test/CMakeFiles/test_external_math.dir/Math/test_external_math.cpp.o
+[ 84%] Linking CXX executable test_restraints
+[ 84%] Built target test_restraints
+[ 85%] Building CXX object test/CMakeFiles/test_hpc_hybrid.dir/Accelerator/test_hpc_hybrid.cpp.o
+[ 85%] Linking CXX executable test_pme
+[ 85%] Built target test_pme
+[ 85%] Building CXX object test/CMakeFiles/test_hpc_status.dir/Accelerator/test_hpc_status.cpp.o
+[ 85%] Linking CXX executable test_external_math
+[ 85%] Built target test_external_math
+[ 85%] Building CUDA object test/CMakeFiles/test_hpc_math.dir/Math/test_hpc_math.cu.o
+[ 85%] Linking CXX executable test_hpc_status
+[ 85%] Built target test_hpc_status
+[ 86%] Building CUDA object test/CMakeFiles/test_hpc_minimization.dir/MolecularMechanics/test_hpc_minimization.cu.o
+[ 86%] Linking CUDA executable test_hpc_math
+[ 86%] Built target test_hpc_math
+[ 86%] Building CUDA object test/CMakeFiles/test_hpc_dynamics.dir/MolecularMechanics/test_hpc_dynamics.cu.o
+[ 86%] Linking CXX executable test_dynamics
+[ 86%] Built target test_dynamics
+[ 87%] Building CUDA object test/CMakeFiles/test_hpc_synthesis.dir/Synthesis/test_hpc_synthesis.cu.o
+[ 87%] Linking CUDA executable test_hpc_minimization
+[ 87%] Built target test_hpc_minimization
+[ 88%] Building CXX object apps/Dyna/CMakeFiles/dynamics.stormm.cuda.dir/src/setup.cpp.o
+[ 88%] Building CXX object apps/Dyna/CMakeFiles/dynamics.stormm.cuda.dir/src/simulator.cpp.o
+[ 88%] Linking CXX executable test_hpc_hybrid
+[ 88%] Built target test_hpc_hybrid
+[ 88%] Building CXX object test/CMakeFiles/test_hpc_synthesis.dir/Synthesis/assemble_restraints.cpp.o
+[ 88%] Building CXX object apps/Ffrn/CMakeFiles/ffrefine.stormm.cuda.dir/src/ffrefine.cpp.o
+[ 88%] Linking CXX executable dynamics.stormm.cuda
+[ 88%] Built target dynamics.stormm.cuda
+[ 89%] Building CXX object apps/Conf/CMakeFiles/conformer.stormm.cuda.dir/src/analysis.cpp.o
+[ 89%] Linking CUDA executable test_hpc_dynamics
+[ 89%] Linking CXX executable ffrefine.stormm.cuda
+[ 89%] Built target test_hpc_dynamics
+[ 89%] Building CXX object apps/Gbsa/CMakeFiles/mmgbsa.stormm.cuda.dir/src/mmgbsa_analysis.cpp.o
+[ 89%] Built target ffrefine.stormm.cuda
+[ 89%] Building CXX object apps/Emul/CMakeFiles/emulate.stormm.cuda.dir/src/emulate_analysis.cpp.o
+[ 90%] Building CXX object apps/Emul/CMakeFiles/emulate.stormm.cuda.dir/src/emulate_enumerators.cpp.o
+[ 90%] Building CXX object apps/Emul/CMakeFiles/emulate.stormm.cuda.dir/src/emulate.cpp.o
+[ 90%] Building CXX object apps/Gbsa/CMakeFiles/mmgbsa.stormm.cuda.dir/src/mmgbsa_carveout.cpp.o
+[ 90%] Building CXX object apps/Gbsa/CMakeFiles/mmgbsa.stormm.cuda.dir/src/mmgbsa_problem_set.cpp.o
+[ 90%] Linking CXX executable test_hpc_synthesis
+[ 91%] Building CXX object apps/Gbsa/CMakeFiles/mmgbsa.stormm.cuda.dir/src/mmgbsa_testing.cpp.o
+[ 91%] Built target test_hpc_synthesis
+[ 91%] Building CXX object apps/Tutorial/CMakeFiles/tutorial_i.stormm.cuda.dir/tutorial_i.cpp.o
+[ 91%] Linking CXX executable emulate.stormm.cuda
+[ 91%] Built target emulate.stormm.cuda
+[ 91%] Building CXX object apps/Tutorial/CMakeFiles/tutorial_ii.stormm.cuda.dir/tutorial_ii.cpp.o
+[ 91%] Building CXX object apps/Conf/CMakeFiles/conformer.stormm.cuda.dir/src/setup.cpp.o
+[ 91%] Building CXX object apps/Tutorial/CMakeFiles/tutorial_ii.stormm.cuda.dir/randomwalk.cpp.o
+[ 91%] Building CUDA object apps/Tutorial/CMakeFiles/tutorial_i.stormm.cuda.dir/hpc_tutorial_i.cu.o
+[ 91%] Building CXX object apps/Gbsa/CMakeFiles/mmgbsa.stormm.cuda.dir/src/mmgbsa_enumerators.cpp.o
+[ 91%] Building CXX object apps/Gbsa/CMakeFiles/mmgbsa.stormm.cuda.dir/src/nml_mmgbsa.cpp.o
+[ 91%] Building CXX object apps/Conf/CMakeFiles/conformer.stormm.cuda.dir/src/conformer.cpp.o
+[ 91%] Building CUDA object apps/Tutorial/CMakeFiles/tutorial_ii.stormm.cuda.dir/hpc_randomwalk.cu.o
+[ 92%] Linking CXX executable tutorial_i.stormm.cuda
+[ 92%] Built target tutorial_i.stormm.cuda
+[ 92%] Building CXX object apps/Gbsa/CMakeFiles/mmgbsa.stormm.cuda.dir/src/mmgbsa.cpp.o
+[ 92%] Building CXX object apps/Tutorial/CMakeFiles/tutorial_iii.stormm.cuda.dir/tutorial_iii.cpp.o
+[ 93%] Linking CXX executable tutorial_ii.stormm.cuda
+[ 93%] Built target tutorial_ii.stormm.cuda
+[ 93%] Building CXX object apps/Tutorial/CMakeFiles/tutorial_iv.stormm.cuda.dir/tutorial_iv.cpp.o
+[ 93%] Linking CXX executable tutorial_iii.stormm.cuda
+[ 93%] Built target tutorial_iii.stormm.cuda
+[ 93%] Building CXX object benchmark/CMakeFiles/hail_examination.dir/DirectSpace/hail_examination.cpp.o
+[ 93%] Linking CXX executable conformer.stormm.cuda
+[ 93%] Built target conformer.stormm.cuda
+[ 93%] Building CXX object benchmark/CMakeFiles/erfc_tables.dir/DirectSpace/erfc_tables.cpp.o
+[ 94%] Linking CXX executable mmgbsa.stormm.cuda
+[ 95%] Linking CXX executable tutorial_iv.stormm.cuda
+[ 95%] Built target mmgbsa.stormm.cuda
+[ 95%] Built target tutorial_iv.stormm.cuda
+[ 95%] Building CXX object benchmark/CMakeFiles/pair_interactions.dir/DirectSpace/pair_interactions.cpp.o
+[ 95%] Building CXX object benchmark/CMakeFiles/charge_mapping.dir/ReciprocalSpace/charge_mapping.cpp.o
+[ 96%] Linking CXX executable erfc_tables
+[ 96%] Built target erfc_tables
+[ 96%] Building CXX object benchmark/CMakeFiles/valence.dir/ForceAccumulation/valence.cpp.o
+[ 96%] Linking CXX executable valence
+[ 96%] Built target valence
+[ 96%] Building CUDA object benchmark/CMakeFiles/valence_interactions.dir/DirectSpace/valence_interactions.cu.o
+[ 97%] Linking CXX executable hail_examination
+[ 97%] Built target hail_examination
+[ 97%] Building CUDA object benchmark/CMakeFiles/accumulate.dir/ForceAccumulation/accumulate.cu.o
+[ 97%] Linking CXX executable pair_interactions
+[ 97%] Built target pair_interactions
+[ 97%] Building CUDA object benchmark/CMakeFiles/gpu_tiling.dir/KernelTesting/gpu_tiling.cu.o
+[ 97%] Linking CXX executable charge_mapping
+[ 97%] Built target charge_mapping
+[ 97%] Building CUDA object benchmark/CMakeFiles/test_nonperiodic_kernels.dir/KernelTesting/test_nonperiodic_kernels.cu.o
+[ 97%] Linking CUDA executable accumulate
+[ 97%] Built target accumulate
+[ 98%] Building CUDA object benchmark/CMakeFiles/test_periodic_kernels.dir/KernelTesting/test_periodic_kernels.cu.o
+[ 99%] Linking CUDA executable valence_interactions
+[ 99%] Linking CUDA executable gpu_tiling
+[ 99%] Built target valence_interactions
+[ 99%] Built target gpu_tiling
+[ 99%] Building CUDA object benchmark/CMakeFiles/fft_throughput.dir/ReciprocalSpace/fft_throughput.cu.o
+[ 99%] Linking CUDA executable test_nonperiodic_kernels
+[ 99%] Built target test_nonperiodic_kernels
+[ 99%] Linking CUDA executable test_periodic_kernels
+[ 99%] Built target test_periodic_kernels
+[100%] Linking CUDA executable fft_throughput
+[100%] Built target fft_throughput
+Saving image...
+Image saved, took 8.59s
+
+Built image im-A2ktjZGY32aAQBQcViqwzK in 348.87s
+
+
+Building image im-2JXwjN2ZVhHXbN8P9fkJGT
+
+=> Step 0: FROM base
+
+=> Step 1: ENV STORMM_HOME=/app/stormm_legacy
+
+=> Step 2: ENV STORMM_SOURCE=/app/stormm_legacy
+
+=> Step 3: ENV STORMM_BUILD=/app/stormmbuild_legacy
+
+=> Step 4: ENV STORMM_VERBOSE=COMPACT
+Saving image...
+Image saved, took 914.88ms
+
+Built image im-2JXwjN2ZVhHXbN8P9fkJGT in 2.60s
+
+
+✓ Created objects.
+├── 🔨 Created mount /Users/amir/Documents/Github/stormm-modal/stormm_modal.py
+├── 🔨 Created mount runs.toml
+├── 🔨 Created function smoke.
+├── 🔨 Created function run_dynamics.
+└── 🔨 Created function run_dynamics_legacy.
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.4.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+
+==============================================================================
+run                                  rc    wall_s  peak_MiB
+------------------------------------------------------------------------------
+legacy-imp-nve                       -6       1.1         0
+legacy-imp-langevin                  -6       0.3         0
+legacy-imp-andersen                  -6       0.3         0
+==============================================================================
+
+--- legacy-imp-nve FAILED (rc=-6) ---
+
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  PhaseSpaceSynthesis :: At least one PhaseSpace object must be provided.
+
+
+--- legacy-imp-langevin FAILED (rc=-6) ---
+
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  PhaseSpaceSynthesis :: At least one PhaseSpace object must be provided.
+
+
+--- legacy-imp-andersen FAILED (rc=-6) ---
+
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  PhaseSpaceSynthesis :: At least one PhaseSpace object must be provided.
+
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/toposbio/main/ap-4aDKba6rAymYTuZOXCVs0G
