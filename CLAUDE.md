@@ -28,8 +28,13 @@ patches upstream.
   `image.add_local_*` not `modal.Mount`, `@modal.fastapi_endpoint`). The client
   here is 1.5.5; introspect signatures with `inspect.signature` rather than
   trusting recalled API shapes.
-- Config is parsed locally in `local_entrypoint`s and passed to remote functions as
-  plain dicts, so no local file reads happen at global scope (which runs remotely too).
+- Global scope runs **remotely as well as locally**. The `@app.function` decorators
+  need config at import time (GPU type, volume name), so `runs.toml` is read at module
+  level *and* shipped into the image via `.add_local_file("runs.toml", "/root/runs.toml")`
+  — remotely `__file__` is `/root/stormm_modal.py`, so `HERE` resolves to `/root`.
+  Omitting that file is a `FileNotFoundError` at container import, not at call time.
+- Beyond that, per-run values are resolved in `local_entrypoint`s and passed to remote
+  functions as plain dicts, so remote functions never re-read config themselves.
 
 ## Running
 
@@ -62,6 +67,9 @@ Verified against commit `84e97db`:
 - `src/Potential/cellgrid.h:109-110`: `minimum_cell_width` 2.5 A, `maximum_cell_width`
   12.0 A, enforced by `CellGrid::checkViability`. Small boxes at a 9 A cutoff are
   marginal — tip3p at 23.4 A is the stress case.
+
+See `REQUIREMENTS.md` for the ToposBio-specific gap analysis (a99SB-disp, GAFF2,
+TIP4P virtual sites, REST2, equilibration) — that is the document to hand to Andre.
 
 ### Known limitations (all confirmed in source)
 

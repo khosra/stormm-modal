@@ -86,6 +86,12 @@ stormm_image = (
             "STORMM_VERBOSE": "COMPACT",
         }
     )
+    # Module-level code runs remotely too, and the decorators below need the config
+    # at import time (gpu=, volume names), so runs.toml has to exist in the container
+    # before this module is imported. Remotely __file__ is /root/stormm_modal.py, so
+    # HERE resolves to /root and this lands exactly where load_config() looks.
+    # add_local_file is applied at startup and does not invalidate the build layers.
+    .add_local_file("runs.toml", "/root/runs.toml")
 )
 
 
