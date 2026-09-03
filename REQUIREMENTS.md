@@ -97,6 +97,29 @@ Audience: Andre, who built Tsunami. Context: currently OpenMM + a99SB-disp
 - **Lengthy equilibration** is a consequence of the two items above rather than a
   separate gap: equilibration has to happen in whatever engine does prep.
 
+## Next investigation: topos-md
+
+The authoritative statement of what a production run actually needs is `topos-md`,
+the primary ToposBio MD repo, where Malhar configures the OpenMM runs. Reading the
+OpenMM setup there and diffing it against what STORMM's `&dynamics`/`&pppm`/
+`&solvent` namelists can express is the way to find the remaining gaps, rather
+than guessing from STORMM's side as this document has done so far.
+
+Known to look for, from the discussion that produced this file:
+
+- **Warmup / heating protocol.** Almost certainly a gap. STORMM has `tevo_start`
+  and `tevo_end` for a temperature ramp within a run, but no PBC minimization and
+  no NPT means the usual minimize → heat → density-equilibrate sequence cannot
+  happen in STORMM at all.
+- Thermostat and integrator choice, and whether STORMM's set matches.
+- Constraint scheme and timestep (`rigid_geom`, hydrogen mass repartitioning).
+- Restraint usage during equilibration.
+- Reporting cadence and trajectory format expected by downstream analysis.
+
+Note: `topos-md` is private and could not be read from this session — enumerating
+org repositories was blocked by the sandbox. Needs either access or a paste of the
+relevant OpenMM setup code.
+
 ## Deferred / not yet investigated
 
 - Trajectory output formats and whether they round-trip into the existing Tsunami
