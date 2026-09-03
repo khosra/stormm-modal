@@ -95,6 +95,38 @@ stormm_image = (
 )
 
 
+# A second image built from STORMM main as of 2025-07-17 -- what Andre's unpinned
+# `git clone psivant/stormm` would have produced when the Tsunami container was last
+# built. Its only purpose is to establish whether the Langevin energy-sink bug
+# predates the ~97k-system campaign, which code archaeology could not settle cleanly.
+LEGACY_SRC = "/app/stormm_legacy"
+LEGACY_BUILD = "/app/stormmbuild_legacy"
+LEGACY_DYNA = f"{LEGACY_BUILD}/apps/Dyna/dynamics.stormm.cuda"
+
+stormm_legacy_image = (
+    modal.Image.from_registry(_BUILD["cuda_image"], add_python="3.12")
+    .apt_install("git", "cmake", "g++", "libeigen3-dev", "ca-certificates")
+    .env({"CUDADIR": "/usr/local/cuda", "CUDACXX": "/usr/local/cuda/bin/nvcc",
+          "CXXFLAGS": "-I/usr/local/cuda/include", "LDFLAGS": "-L/usr/local/cuda/lib64"})
+    .run_commands(
+        f"git clone {_BUILD['repo']} {LEGACY_SRC}",
+        f"cd {LEGACY_SRC} && git checkout {_BUILD['legacy_commit']}",
+        (
+            f"cmake -S {LEGACY_SRC} -B {LEGACY_BUILD}"
+            " -DCMAKE_BUILD_TYPE=RELEASE -DSTORMM_ENABLE_CUDA=YES -DSTORMM_ENABLE_RDKIT=NO"
+            f" -DCUSTOM_GPU_ARCH={_BUILD['gpu_arch']}"
+            f" -DCUSTOM_NVCC_THREADS={_BUILD['nvcc_threads']}"
+            " -DCMAKE_CXX_FLAGS=-I/usr/local/cuda/include"
+            " -DCMAKE_EXE_LINKER_FLAGS=-L/usr/local/cuda/lib64"
+        ),
+        f"cmake --build {LEGACY_BUILD} -j {_BUILD['make_jobs']}",
+    )
+    .env({"STORMM_HOME": LEGACY_SRC, "STORMM_SOURCE": LEGACY_SRC,
+          "STORMM_BUILD": LEGACY_BUILD, "STORMM_VERBOSE": "COMPACT"})
+    .add_local_file("runs.toml", "/root/runs.toml")
+)
+
+
 # ---------------------------------------------------------------------------
 # Input deck generation
 # ---------------------------------------------------------------------------
@@ -500,4 +532,104 @@ def thermostat_probe(nstlim: int = 4000):
         ("probe-langevin-norigid", deck(thermostat=3).replace("rigid_geom on", "rigid_geom off")),
     ]
     results = list(run_dynamics.starmap([(n, d) for n, d in variants]))
+    _report(results)
+
+
+@app.local_entrypoint()
+def implicit_thermostat_probe(nstlim: int = 20000):
+    """Does the Langevin energy-sink bug also affect IMPLICIT-solvent runs?
+
+    This matters beyond STORMM itself. The Tsunami dataset (~97k systems) was
+    generated with `ntt = 3` and `igb = 8` on isolated systems. The Phase B
+    finding was measured on periodic systems only, so it does not transfer
+    automatically. If Langevin also drains energy under isolated boundary
+    conditions, that dataset consists of quenched trajectories.
+
+    Reproduces Andre's deck shape: heat from tempi 100 K to temp0 300 K across an
+    evolution window, GB-Neck2 implicit solvent, isolated boundaries.
+    """
+    cfg = load_config()
+    system = cfg["systems"]["gly_arg"]
+    dyn = dict(cfg["dynamics"])
+    ppp = cfg["pppm"]
+
+    def deck(ntt, ramp=True):
+        d = build_deck(system, dyn, ppp, nstlim, max(nstlim // 20, 1), nstlim,
+                       replicas=4, thermostat=ntt, precision="single", igb=8)
+        if ramp and ntt != 0:
+            # Andre's shape: ramp 100 K -> 300 K over an explicit evolution window.
+            d = d.replace(
+                "  temperature = { tempi 300.0, temp0 300.0, -label GlyArg },\n",
+                "  temperature = { tempi 100.0, temp0 300.0, -label GlyArg },\n"
+                f"  tevo_start = {nstlim // 8}, tevo_end = {nstlim * 3 // 8},\n"
+                "  tcache_depth 1,\n")
+        return d
+
+    variants = [
+        ("imp-nve",                deck(0)),
+        ("imp-langevin-ramp",      deck(3)),           # <- Andre's configuration
+        ("imp-andersen-ramp",      deck(2)),
+        ("imp-langevin-flat",      deck(3, ramp=False)),
+        ("imp-andersen-flat",      deck(2, ramp=False)),
+    ]
+    results = list(run_dynamics.starmap([(n, d) for n, d in variants]))
+    _report(results)
+
+
+@app.function(image=stormm_legacy_image, gpu=_MODAL["gpu"], timeout=3600,
+              volumes={"/results": results_vol})
+def run_dynamics_legacy(run_name: str, deck: str, run_timeout: int = 3000) -> dict:
+    """Same as run_dynamics, against the July-2025 STORMM build."""
+    import json, shutil, subprocess, time
+    work = pathlib.Path("/tmp/run") / run_name
+    if work.exists():
+        shutil.rmtree(work)
+    work.mkdir(parents=True)
+    (work / "md.in").write_text(deck)
+    t0 = time.monotonic()
+    proc = subprocess.run([LEGACY_DYNA, "-O", "-i", "md.in", "-except", "warn"],
+                          cwd=work, capture_output=True, text=True, timeout=run_timeout)
+    wall = time.monotonic() - t0
+    (work / "stdout.txt").write_text(proc.stdout)
+    (work / "stderr.txt").write_text(proc.stderr)
+    summary = {"run_name": run_name, "returncode": proc.returncode, "timed_out": False,
+               "wall_seconds": round(wall, 2), "peak_gpu_mib": 0,
+               "stdout_tail": proc.stdout[-6000:], "stderr_tail": proc.stderr[-6000:],
+               "artifacts": sorted(p.name for p in work.iterdir())}
+    (work / "summary.json").write_text(json.dumps(summary, indent=2))
+    dest = pathlib.Path("/results") / run_name
+    if dest.exists():
+        shutil.rmtree(dest)
+    shutil.copytree(work, dest)
+    results_vol.commit()
+    return summary
+
+
+@app.local_entrypoint()
+def legacy_thermostat_probe(nstlim: int = 20000):
+    """Did the Langevin energy-sink bug exist when Tsunami was generated?
+
+    Runs the implicit-solvent thermostat comparison against STORMM main as of
+    2025-07-17. If Langevin plateaus well below NVE and Andersen here too, the
+    campaign's ~97k systems were sampled at the wrong temperature.
+    """
+    cfg = load_config()
+    system = cfg["systems"]["gly_arg"]
+    dyn, ppp = dict(cfg["dynamics"]), cfg["pppm"]
+
+    def deck(ntt):
+        d = build_deck(system, dyn, ppp, nstlim, max(nstlim // 20, 1), nstlim,
+                       replicas=4, thermostat=ntt, precision="single", igb=8)
+        if ntt != 0:
+            d = d.replace(
+                "  temperature = { tempi 300.0, temp0 300.0, -label GlyArg },\n",
+                "  temperature = { tempi 100.0, temp0 300.0, -label GlyArg },\n"
+                f"  tevo_start = {nstlim // 8}, tevo_end = {nstlim * 3 // 8},\n"
+                "  tcache_depth 1,\n")
+        return d
+
+    variants = [("legacy-imp-nve", deck(0)),
+                ("legacy-imp-langevin", deck(3)),
+                ("legacy-imp-andersen", deck(2))]
+    results = list(run_dynamics_legacy.starmap([(n, d) for n, d in variants]))
     _report(results)

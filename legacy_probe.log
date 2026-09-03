@@ -1,0 +1,324 @@
+✓ Initialized. View run at 
+https://modal.com/apps/toposbio/main/ap-4aDKba6rAymYTuZOXCVs0G
+Building image im-A2ktjZGY32aAQBQcViqwzK
+
+=> Step 0: FROM base
+
+=> Step 1: RUN git clone https://github.com/Psivant/stormm.git /app/stormm_legacy
+Cloning into '/app/stormm_legacy'...
+
+=> Step 2: RUN cd /app/stormm_legacy && git checkout 3eeccbde519254620fdc024f396fa07df78ea69e
+Note: switching to '3eeccbde519254620fdc024f396fa07df78ea69e'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+HEAD is now at 3eeccbd Merge branch 'development' into 'main'
+
+=> Step 3: RUN cmake -S /app/stormm_legacy -B /app/stormmbuild_legacy -DCMAKE_BUILD_TYPE=RELEASE -DSTORMM_ENABLE_CUDA=YES -DSTORMM_ENABLE_RDKIT=NO -DCUSTOM_GPU_ARCH=89 -DCUSTOM_NVCC_THREADS=2 -DCMAKE_CXX_FLAGS=-I/usr/local/cuda/include -DCMAKE_EXE_LINKER_FLAGS=-L/usr/local/cuda/lib64
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- The C compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Including PocketFFT as part of the build process
+-- Cloning PocketFFT repository
+Cloning into '/app/stormmbuild_legacy/third_party/pocketfft'...
+-- CUDA support will be enabled
+-- The CUDA compiler identification is NVIDIA 12.4.131
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /usr/local/cuda/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- Using user-specified GPU architecture: compute_89
+-- Found CUDAToolkit: /usr/local/cuda/include (found version "12.4.131") 
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Found Git: /usr/bin/git (found version "2.34.1") 
+fatal: No tags can describe '3eeccbde519254620fdc024f396fa07df78ea69e'.
+Try --always, or create some tags.
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /app/stormmbuild_legacy
+
+=> Step 4: RUN cmake --build /app/stormmbuild_legacy -j 4
+[  0%] Built target PocketFFTBuild
+[  1%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Accelerator/card_utilities.cpp.o
+[  1%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Accelerator/core_kernel_manager.cpp.o
+[  1%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Accelerator/gpu_details.cpp.o
+[  1%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Accelerator/gpu_enumerators.cpp.o
+[  2%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Accelerator/hybrid.cpp.o
+[  2%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Accelerator/hybrid_util.cpp.o
+[  2%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Accelerator/kernel_format.cpp.o
+[  2%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Accelerator/mesh_kernel_manager.cpp.o
+[  2%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Analysis/comparison_guide.cpp.o
+[  3%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Chemistry/atom_equivalence.cpp.o
+[  3%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Chemistry/atommask.cpp.o
+[  3%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Chemistry/chemical_features.cpp.o
+[  3%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Chemistry/chemistry_enumerators.cpp.o
+[  4%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Chemistry/indigo.cpp.o
+[  4%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Chemistry/match_bonding_pattern.cpp.o
+[  4%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Chemistry/residue_dictionary.cpp.o
+[  4%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Chemistry/znumber.cpp.o
+[  5%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Constants/behavior.cpp.o
+[  5%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Constants/generalized_born.cpp.o
+[  5%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/DataTypes/casting_ops.cpp.o
+[  5%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/DataTypes/stormm_vector_types.cpp.o
+[  6%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/FileManagement/binary_encoding.cpp.o
+[  6%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/FileManagement/directory_util.cpp.o
+[  6%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/FileManagement/file_enumerators.cpp.o
+[  6%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/FileManagement/file_listing.cpp.o
+[  7%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/FileManagement/file_util.cpp.o
+[  7%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/ForceField/forcefield_element.cpp.o
+[  7%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/ForceField/forcefield_enumerators.cpp.o
+[  7%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/clustering.cpp.o
+[  8%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/formulas.cpp.o
+[  8%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/hilbert_sfc.cpp.o
+[  8%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/juffa.cpp.o
+[  8%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/log_scale_spline.cpp.o
+[  9%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/math_enumerators.cpp.o
+[  9%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/matrix_ops.cpp.o
+[  9%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/reduction.cpp.o
+[  9%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/reduction_abstracts.cpp.o
+[ 10%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/reduction_bridge.cpp.o
+[ 10%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/reduction_enumerators.cpp.o
+[ 10%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/reduction_workunit.cpp.o
+[ 10%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/rounding.cpp.o
+[ 11%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/series_ops.cpp.o
+[ 11%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/sorting_enumerators.cpp.o
+[ 11%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/statistical_enumerators.cpp.o
+[ 11%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/statistics.cpp.o
+[ 12%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/tricubic_cell.cpp.o
+[ 12%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Math/vector_ops.cpp.o
+[ 12%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MolecularMechanics/dynamics.cpp.o
+[ 12%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MolecularMechanics/kinetic.cpp.o
+[ 12%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MolecularMechanics/line_minimization.cpp.o
+[ 13%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MolecularMechanics/minimization.cpp.o
+[ 13%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MolecularMechanics/mm_controls.cpp.o
+[ 13%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MolecularMechanics/mm_enumerators.cpp.o
+[ 13%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MolecularMechanics/mm_evaluation.cpp.o
+[ 14%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MoleculeFormat/mdlmol.cpp.o
+[ 14%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MoleculeFormat/mdlmol_atomlist.cpp.o
+[ 14%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MoleculeFormat/mdlmol_bond.cpp.o
+[ 14%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MoleculeFormat/mdlmol_dataitem.cpp.o
+[ 15%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MoleculeFormat/mdlmol_property.cpp.o
+[ 15%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MoleculeFormat/mdlmol_refinement.cpp.o
+[ 15%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MoleculeFormat/mdlmol_request.cpp.o
+[ 15%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MoleculeFormat/molecule_file_io.cpp.o
+[ 16%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MoleculeFormat/molecule_format_enumerators.cpp.o
+[ 16%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MoleculeFormat/molecule_parsing.cpp.o
+[ 16%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/MoleculeFormat/pdb.cpp.o
+[ 16%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/command_line_parser.cpp.o
+[ 17%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/input.cpp.o
+[ 17%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/input_transcript.cpp.o
+[ 17%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/namelist_common.cpp.o
+[ 17%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/namelist_element.cpp.o
+[ 18%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/namelist_emulator.cpp.o
+[ 18%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/namelist_enumerators.cpp.o
+[ 18%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/namelist_inventory.cpp.o
+[ 18%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_conformer.cpp.o
+[ 19%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_dynamics.cpp.o
+[ 19%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_emulate.cpp.o
+[ 19%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_ffmorph.cpp.o
+[ 19%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_files.cpp.o
+[ 20%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_mesh.cpp.o
+[ 20%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_minimize.cpp.o
+[ 20%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_nice.cpp.o
+[ 20%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_pppm.cpp.o
+[ 21%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_precision.cpp.o
+[ 21%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_random.cpp.o
+[ 21%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_receptor.cpp.o
+[ 21%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_remd.cpp.o
+[ 22%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_report.cpp.o
+[ 22%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_restraint.cpp.o
+[ 22%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_scene.cpp.o
+[ 22%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/nml_solvent.cpp.o
+[ 22%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Namelists/user_settings.cpp.o
+[ 23%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Numerics/host_bit_counting.cpp.o
+[ 23%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Numerics/numeric_enumerators.cpp.o
+[ 23%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Numerics/split_fixed_precision.cpp.o
+[ 23%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Parsing/ascii_numbers.cpp.o
+[ 24%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Parsing/citation.cpp.o
+[ 24%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Parsing/parse.cpp.o
+[ 24%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Parsing/parsing_enumerators.cpp.o
+[ 24%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Parsing/polynumeric.cpp.o
+[ 25%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Parsing/tabulation.cpp.o
+[ 25%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Parsing/textfile.cpp.o
+[ 25%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Parsing/textguard.cpp.o
+[ 25%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/cacheresource.cpp.o
+[ 26%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/cellgrid.cpp.o
+[ 26%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/convolution_manager.cpp.o
+[ 26%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/energy_enumerators.cpp.o
+[ 26%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/eval_synthesis.cpp.o
+[ 27%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/eval_valence_workunit.cpp.o
+[ 27%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/forward_exclusionmask.cpp.o
+[ 27%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/layered_potential_metrics.cpp.o
+[ 27%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/local_exclusionmask.cpp.o
+[ 28%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/map_density.cpp.o
+[ 28%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/nbemulator.cpp.o
+[ 28%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/nbemulator_util.cpp.o
+[ 28%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/nonbonded_potential.cpp.o
+[ 29%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/pme_potential.cpp.o
+[ 29%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/pme_util.cpp.o
+[ 29%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/pmigrid.cpp.o
+[ 29%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/ppitable.cpp.o
+[ 30%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/scorecard.cpp.o
+[ 30%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/soft_core_potentials.cpp.o
+[ 30%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/static_exclusionmask.cpp.o
+[ 30%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/surface_area.cpp.o
+[ 31%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/tile_manager.cpp.o
+[ 31%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Potential/valence_potential.cpp.o
+[ 31%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Random/random.cpp.o
+[ 31%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Random/random_enumerators.cpp.o
+[ 32%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/code_dox.cpp.o
+[ 32%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/display.cpp.o
+[ 32%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/error_format.cpp.o
+[ 32%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/help_messages.cpp.o
+[ 32%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/ordered_list.cpp.o
+[ 33%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/present_energy.cpp.o
+[ 33%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/present_field.cpp.o
+[ 33%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/progress_bar.cpp.o
+[ 33%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/render_molecule.cpp.o
+[ 34%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/render_options.cpp.o
+[ 34%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/report_table.cpp.o
+[ 34%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/reporting_enumerators.cpp.o
+[ 34%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/section_contents.cpp.o
+[ 35%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/summary_file.cpp.o
+[ 35%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Reporting/watcher.cpp.o
+[ 35%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Restraints/bounded_restraint.cpp.o
+[ 35%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Restraints/restraint_apparatus.cpp.o
+[ 36%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Restraints/restraint_builder.cpp.o
+[ 36%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Restraints/restraint_enumerators.cpp.o
+[ 36%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Sampling/exchange_nexus.cpp.o
+[ 36%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Sampling/temp_distributions.cpp.o
+[ 37%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/background_mesh.cpp.o
+[ 37%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/clash_detection.cpp.o
+[ 37%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/global_manipulation.cpp.o
+[ 37%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/hub_and_spoke.cpp.o
+[ 38%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/isomerization.cpp.o
+[ 38%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/local_arrangement.cpp.o
+[ 38%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/mesh_foundation.cpp.o
+[ 38%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/mesh_parameters.cpp.o
+[ 39%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/mesh_rulers.cpp.o
+[ 39%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/radius_gyration.cpp.o
+[ 39%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/rmsd.cpp.o
+[ 39%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/rmsd_plan.cpp.o
+[ 40%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/settle.cpp.o
+[ 40%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/structure_enumerators.cpp.o
+[ 40%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/structure_ops.cpp.o
+[ 40%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/structure_utils.cpp.o
+[ 41%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Structure/virtual_site_handling.cpp.o
+[ 41%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Synthesis/ag_synthesis_constructors.cpp.o
+[ 41%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Synthesis/ag_synthesis_mechanics.cpp.o
+[ 41%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Synthesis/brickwork.cpp.o
+[ 42%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Synthesis/condensate.cpp.o
+[ 42%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Synthesis/implicit_solvent_workspace.cpp.o
+[ 42%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Synthesis/nonbonded_workunit.cpp.o
+[ 42%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Synthesis/phasespace_synthesis.cpp.o
+[ 42%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Synthesis/static_mask_synthesis.cpp.o
+[ 43%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Synthesis/synthesis_cache_map.cpp.o
+[ 43%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Synthesis/synthesis_enumerators.cpp.o
+[ 43%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Synthesis/synthesis_permutor.cpp.o
+[ 43%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Synthesis/systemcache.cpp.o
+[ 44%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Synthesis/valence_workunit.cpp.o
+[ 44%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/amber_prmtop_util.cpp.o
+[ 44%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph.cpp.o
+[ 44%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph_abstracts.cpp.o
+[ 45%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph_analysis.cpp.o
+[ 45%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph_combination.cpp.o
+[ 45%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph_constructors.cpp.o
+[ 45%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph_detailers.cpp.o
+[ 46%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph_enumerators.cpp.o
+[ 46%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph_extraction.cpp.o
+[ 46%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph_getters.cpp.o
+[ 46%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph_intake.cpp.o
+[ 47%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph_miscellaneous.cpp.o
+[ 47%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph_refinement.cpp.o
+[ 47%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph_setters.cpp.o
+[ 47%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph_stage.cpp.o
+[ 48%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/atomgraph_writing.cpp.o
+[ 48%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/combograph_ljmodel.cpp.o
+/app/stormm_legacy/src/Topology/combograph_ljmodel.cpp: In member function 'std::vector<int> stormm::topology::ComboGraphLJModel::computeConsensusParameters() const':
+/app/stormm_legacy/src/Topology/combograph_ljmodel.cpp:151:1: warning: no return statement in function returning non-void [-Wreturn-type]
+  151 | }
+      | ^
+[ 48%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/lennard_jones_analysis.cpp.o
+[ 48%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/topology_limits.cpp.o
+[ 49%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Topology/topology_util.cpp.o
+[ 49%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/amber_ascii.cpp.o
+[ 49%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/barostat.cpp.o
+[ 49%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/coordinate_copy.cpp.o
+[ 50%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/coordinate_graft.cpp.o
+[ 50%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/coordinate_intake.cpp.o
+[ 50%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/coordinate_series.cpp.o
+[ 50%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/coordinate_swap.cpp.o
+[ 51%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/coordinate_swap_plan.cpp.o
+[ 51%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/coordinate_util.cpp.o
+[ 51%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/coordinateframe.cpp.o
+[ 51%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/integration.cpp.o
+[ 52%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/motion_sweeper.cpp.o
+[ 52%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/phasespace.cpp.o
+[ 52%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/thermostat.cpp.o
+[ 52%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/trajectory_enumerators.cpp.o
+[ 52%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/trim.cpp.o
+[ 53%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/write_annotated_frame.cpp.o
+[ 53%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/Trajectory/write_frame.cpp.o
+[ 53%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/UnitTesting/approx.cpp.o
+[ 53%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/UnitTesting/checklist.cpp.o
+[ 54%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/UnitTesting/dissect_textfile.cpp.o
+[ 54%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/UnitTesting/file_snapshot.cpp.o
+[ 54%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/UnitTesting/stopwatch.cpp.o
+[ 54%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/UnitTesting/test_environment.cpp.o
+[ 55%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/UnitTesting/test_system_manager.cpp.o
+[ 55%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/UnitTesting/unit_test.cpp.o
+[ 55%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/UnitTesting/unit_test_enumerators.cpp.o
+[ 55%] Building CXX object CMakeFiles/stormm_cpu_objects.dir/src/UnitTesting/vector_report.cpp.o
+[ 55%] Built target stormm_cpu_objects
+CPU compilation complete. Memory can be freed.
+[ 55%] Built target stormm_cpu_complete
+[ 56%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/MolecularMechanics/hpc_dynamics.cu.o
+[ 56%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Accelerator/hpc_config.cu.o
+[ 56%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Math/hpc_reduction.cu.o
+[ 56%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Accelerator/hpc_hybrid_util.cu.o
+[ 57%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/MolecularMechanics/hpc_kinetic.cu.o
+[ 57%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/MolecularMechanics/hpc_minimization.cu.o
+[ 57%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_cellgrid.cu.o
+[ 57%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_ddpme_potential.cu.o
+[ 58%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_dfpme_potential.cu.o
+[ 58%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_fdpme_potential.cu.o
+[ 58%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_ffpme_potential.cu.o
+[ 58%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_map_density.cu.o
+[ 59%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_nonbonded_potential.cu.o
+[ 59%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_pme_potential.cu.o
+[ 59%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_pmigrid.cu.o
+[ 59%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_scorecard.cu.o
+[ 60%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_surface_area.cu.o
+[ 60%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_valence_potential.cu.o
+[ 60%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_valence_potential_d.cu.o
+[ 60%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_valence_potential_dpme.cu.o
+[ 61%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_valence_potential_dpmedual.cu.o
+[ 61%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_valence_potential_flg.cu.o
+[ 61%] Building CUDA object CMakeFiles/stormm_cuda_objects.dir/src/Potential/hpc_valence_potential_fmd.cu.o

@@ -1,0 +1,38 @@
+✓ Initialized. View run at 
+https://modal.com/apps/toposbio/main/ap-9MYSs36rzVSLaf5TUA7IYv
+✓ Created objects.
+├── 🔨 Created mount /Users/amir/Documents/Github/stormm-modal/stormm_modal.py
+├── 🔨 Created mount runs.toml
+├── 🔨 Created function smoke.
+└── 🔨 Created function run_dynamics.
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.4.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+
+==============================================================================
+run                                  rc    wall_s  peak_MiB
+------------------------------------------------------------------------------
+gly_arg-gb8-n16                       0       1.1         7
+symmetry_C1-gb8-n16                   0       0.9         7
+symmetry_C1_in_water-explicit-n16     0       2.2       577
+==============================================================================
+
+Same-solute cost of explicit solvent (symmetry_C1, 16 replicas):
+  implicit GB-Neck2 (22 atoms):       0.9s
+  explicit water   (496 atoms):       2.2s
+  explicit / implicit:              2.52x
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/toposbio/main/ap-9MYSs36rzVSLaf5TUA7IYv

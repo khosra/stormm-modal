@@ -24,6 +24,7 @@ Audience: Andre, who built Tsunami. Context: currently OpenMM + a99SB-disp
 | Energy minimization under PBC | **Not implemented** | Yes — prep stays upstream |
 | NPT / barostat | **Not implemented** | Yes — prep stays upstream |
 | REST2 | **Not implemented**, three ways | Yes |
+| T-REMD under PBC (the Tsunami ladder: 300/316/332/350 K) | **Not implemented** — isolated boundaries only | Yes — removes the campaign's sampling method |
 | Langevin thermostat (`ntt=3`) | **Broken** — friction with no random force, quenches to 0 K | Use `ntt=2` (Andersen) |
 
 ## Detail
@@ -138,6 +139,89 @@ publish a frozen trajectory.
 
 - **Lengthy equilibration** is a consequence of the two items above rather than a
   separate gap: equilibration has to happen in whatever engine does prep.
+
+## When PME actually became usable
+
+Relevant because the Tsunami campaign ran on an earlier STORMM and the question came
+up of whether explicit solvent had been available all along. It had not. Three
+separate things landed at three separate times, and only the last one makes an
+explicit-solvent trajectory possible.
+
+| What | When | Commit |
+|---|---|---|
+| PME *library components* (`CellGrid`, `PMIGrid`, `pme_util`) | 2023-10-12 | `bff1ba3` |
+| `ConvolutionManager` created, "Begin to add periodic dynamics" | 2024-09-22 | `50ef66a` |
+| Dyna app gains a periodic path (`CellGrid` only) | 2024-12-19 | `c1bf07d` |
+| **`PMIGrid` + `ConvolutionManager` wired into the MD loop** | **2026-08-31** | **`c76bffc`** |
+
+`c76bffc` is the second-to-last commit in the repository, inside the current release
+(v0.3.0, tagged 2026-08-31 at `84e97db`). Release dates: v0.2.0 on 2025-05-23,
+v0.3.0 on 2026-08-31, 465 days apart.
+
+The trap is that v0.2.0 *looks* like it supports explicit solvent. Its Dyna app has a
+`UnitCellType::ORTHORHOMBIC`/`TRICLINIC` branch that constructs a `CellGrid` and calls
+a templated `dynamics()`. But that call passes only the cell grid:
+
+    v0.2.0   dynamics(&poly_ps, &cg, &edyn, &tst, poly_ag, lem, dyncon, preccon, pmecon)
+    v0.3.0   dynamics(&poly_ps, &cg, &pmig, &cvol, &edyn, &tst, poly_ag, lem, dyncon, ...)
+
+v0.2.0's GPU dynamics driver contains **zero** references to `PMIGrid` across its
+`.h`, `.cu` and `.tpp`. There is no reciprocal-space Ewald sum in the MD loop — it
+had a periodic neighbour list, not particle-mesh Ewald.
+
+**To check any given STORMM tree:**
+
+    git log -1 --format='%h %ad' --date=short
+    grep -c PMIGrid src/MolecularMechanics/hpc_dynamics.*   # 0 = no PME in the MD loop
+
+This also explains the quality gradient observed in testing: the PME kernels had
+roughly three years to mature and their unit tests pass, while the integration around
+them is days old — which is where the Langevin thermostat bug lives.
+
+### What the Tsunami container pinned
+
+`ToposBio/stormm` (4 commits, last pushed 2025-07-17) is Andre's Modal container for
+the campaign. Its Dockerfile does:
+
+    RUN git clone https://github.com/psivant/stormm.git
+
+No tag, no commit, no `--branch`. The STORMM version is therefore whatever `main` was
+**on the day the image was built**. Built July 2025, that is v0.2.0-era main:
+no PME in the MD loop. Explicit solvent was not available to that campaign.
+
+For the rebuild, pin the commit. `runs.toml` in this repo does.
+
+## The sampling method, not just the solvent model, is at risk
+
+The `tsunami-sims-v2b` volume stores trajectories at **300 / 316 / 332 / 350 K** per
+system. That is a replica-exchange temperature ladder, not four unrelated runs, and it
+means the campaign's sampling depended on T-REMD.
+
+STORMM's REMD is implemented **only for isolated boundary conditions**. The branch in
+`apps/Dyna/src/simulator.cpp` handles `UnitCellType::NONE` and then, for
+`ORTHORHOMBIC`/`TRICLINIC`, raises:
+
+    "Replica Exchange molecular dynamics is not yet operational for periodic
+     boundary conditions."
+
+So REMD worked for the original implicit-solvent campaign precisely because those
+systems were isolated. **Moving to explicit solvent removes it.** This is a larger
+obstacle than the solvent model itself: the rebuild does not merely swap GB for PME,
+it loses the enhanced sampling the dataset was constructed around, and IDR conformational
+sampling is exactly the case where that hurts most.
+
+Options, none free:
+
+1. Wait for / request periodic REMD upstream from Psivant. Combined with the REST2 gap,
+   this is the single highest-value ask.
+2. Run explicit-solvent plain MD at multiple fixed temperatures and accept the loss of
+   exchange. Cheapest, and STORMM's per-GPU batch throughput makes brute force more
+   viable than it would be elsewhere, but it is not equivalent sampling.
+3. Keep enhanced sampling in OpenMM and use STORMM only where plain MD throughput wins.
+
+Worth resolving before committing to a rebuild plan, because it affects whether STORMM
+is the right engine for this workload at all — as opposed to being the right engine for
+the production-sampling stage of it.
 
 ## Next investigation: topos-md
 

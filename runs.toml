@@ -14,6 +14,10 @@ gpu_arch = "89"
 cuda_image = "nvidia/cuda:12.4.1-devel-ubuntu22.04"
 make_jobs = 4
 nvcc_threads = 2
+# STORMM main as of 2025-07-17, the day Andre's Tsunami container image was last
+# built. His dockerfile clones psivant/stormm unpinned, so this is what that image
+# would have compiled. Used to test whether the Langevin bug predates the campaign.
+legacy_commit = "3eeccbde519254620fdc024f396fa07df78ea69e"
 
 [modal]
 gpu = "L40S"
