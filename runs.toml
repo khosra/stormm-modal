@@ -51,6 +51,15 @@ box = "23.37 A, 109.47 deg truncated octahedron"
 periodic = true
 description = "Pure TIP3P water box; small enough to stress CellGrid::checkViability at a 9 A cutoff"
 
+[systems.tip4p]
+label = "TIP4P"
+topology = "test/Topology/tip4p.top"
+coordinates = "test/Trajectory/tip4p.inpcrd"
+atoms = 1024
+box = "23.68 A, 109.47 deg truncated octahedron"
+periodic = true
+description = "4-site water with an off-atom virtual site. Required, not optional: a99SB-disp (Robustelli) is parameterized against TIP4P-D, so virtual sites under PME are a hard prerequisite for that force field"
+
 [systems.gly_arg]
 label = "GlyArg"
 topology = "test/Namelists/topol/gly_arg.top"
@@ -119,6 +128,8 @@ matrix = [
     { system = "ubiquitin", replicas = 12 },
     { system = "tip3p", replicas = 1 },
     { system = "tip3p", replicas = 16 },
+    { system = "tip4p", replicas = 1 },
+    { system = "tip4p", replicas = 12 },
 ]
 
 [phases.gb]
