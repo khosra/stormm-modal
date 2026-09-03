@@ -95,6 +95,9 @@ description = "The symmetry_C1 solute in explicit water"
 cut = 9.0
 dt = 1.0
 rigid_geom = "on"
+# 2 = Andersen. NOT 3 (Langevin): ntt=3 applies friction with no compensating
+# stochastic force and quenches the system toward 0 K. See REQUIREMENTS.md.
+thermostat = 2
 
 [pppm]
 # theme/order/mesh_ticks confirmed against src/Namelists/nml_pppm.cpp.

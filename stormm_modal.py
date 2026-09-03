@@ -401,7 +401,8 @@ def phase_c(nstlim: int = 0):
         jobs.append((
             f"{entry['system']}-n{n}",
             build_deck(system, cfg["dynamics"], cfg["pppm"], steps, ph["ntpr"],
-                       ph["ntwx"], replicas=n, thermostat=3, precision="single"),
+                       ph["ntwx"], replicas=n,
+                       thermostat=cfg["dynamics"]["thermostat"], precision="single"),
         ))
 
     results = list(run_dynamics.starmap([(n, d) for n, d in jobs]))
@@ -445,7 +446,8 @@ def phase_gb(nstlim: int = 0):
         jobs.append((
             f"{entry['system']}-{tag}-n{n}",
             build_deck(system, cfg["dynamics"], cfg["pppm"], steps, ph["ntpr"],
-                       ph["ntwx"], replicas=n, thermostat=3, precision="single",
+                       ph["ntwx"], replicas=n,
+                       thermostat=cfg["dynamics"]["thermostat"], precision="single",
                        igb=igb),
         ))
 
@@ -462,3 +464,40 @@ def phase_gb(nstlim: int = 0):
             f"  explicit water   (496 atoms):   {wet['wall_seconds']:7.1f}s\n"
             f"  explicit / implicit:            {wet['wall_seconds'] / dry['wall_seconds']:6.2f}x"
         )
+
+
+@app.local_entrypoint()
+def thermostat_probe(nstlim: int = 4000):
+    """Diagnose why ntt=3 drains kinetic energy instead of holding temperature.
+
+    The Phase B NVT run cooled JAC from ~300 K to ~37 K in 9.5 ps, decaying
+    monotonically at roughly the default gamma_ln. That is the signature of
+    friction applied without a compensating stochastic force. The evolution
+    window and RNG cache defaults were both ruled out by reading source, so this
+    varies one knob at a time to find which one the behaviour actually tracks.
+    """
+    cfg = load_config()
+    system = cfg["systems"]["ubiquitin"]   # small enough to iterate quickly
+    dyn = dict(cfg["dynamics"])
+    ppp = cfg["pppm"]
+    base = dict(nstlim=nstlim, ntpr=200, ntwx=nstlim, replicas=1, precision="single")
+
+    def deck(**over):
+        extra = over.pop("extra", "")
+        d = build_deck(system, dyn, ppp, base["nstlim"], base["ntpr"], base["ntwx"],
+                       base["replicas"], over.pop("thermostat"), base["precision"])
+        if extra:
+            d = d.replace("&end\n\n&pppm", extra + "&end\n\n&pppm", 1)
+        return d
+
+    variants = [
+        ("probe-nve",              deck(thermostat=0)),
+        ("probe-langevin-default", deck(thermostat=3)),
+        ("probe-langevin-gamma1",  deck(thermostat=3, extra="  gamma_ln = 1.0,\n")),
+        ("probe-langevin-gamma01", deck(thermostat=3, extra="  gamma_ln = 0.01,\n")),
+        ("probe-andersen",         deck(thermostat=2)),
+        ("probe-berendsen",        deck(thermostat=1)),
+        ("probe-langevin-norigid", deck(thermostat=3).replace("rigid_geom on", "rigid_geom off")),
+    ]
+    results = list(run_dynamics.starmap([(n, d) for n, d in variants]))
+    _report(results)

@@ -1,0 +1,63 @@
+✓ Initialized. View run at 
+https://modal.com/apps/toposbio/main/ap-ixlkyeWojVhWQxSRlJOXb5
+✓ Created objects.
+├── 🔨 Created mount /Users/amir/Documents/Github/stormm-modal/stormm_modal.py
+├── 🔨 Created mount runs.toml
+├── 🔨 Created function smoke.
+└── 🔨 Created function run_dynamics.
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.4.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.4.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.4.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+
+==============================================================================
+run                                  rc    wall_s  peak_MiB
+------------------------------------------------------------------------------
+jac-nve-single                        0       3.8       593
+jac-nvt-single                        0       3.6       595
+jac-nve-double                        0       3.5       605
+==============================================================================
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/toposbio/main/ap-ixlkyeWojVhWQxSRlJOXb5

@@ -24,6 +24,7 @@ Audience: Andre, who built Tsunami. Context: currently OpenMM + a99SB-disp
 | Energy minimization under PBC | **Not implemented** | Yes — prep stays upstream |
 | NPT / barostat | **Not implemented** | Yes — prep stays upstream |
 | REST2 | **Not implemented**, three ways | Yes |
+| Langevin thermostat (`ntt=3`) | **Broken** — friction with no random force, quenches to 0 K | Use `ntt=2` (Andersen) |
 
 ## Detail
 
@@ -59,6 +60,47 @@ Audience: Andre, who built Tsunami. Context: currently OpenMM + a99SB-disp
   and `src/Structure/virtual_site_transmission.cui` returns virtual-site forces to
   frame atoms. Frame types cover FLEX_2/FIXED_2/FLEX_3/FIXED_3/FAD_3 and more.
   The `tip4p` system in `runs.toml` tests this.
+
+### Confirmed bug: the Langevin thermostat is an energy sink
+
+**`ntt=3` (Langevin) does not thermostat. It applies friction with no compensating
+stochastic force, quenching the system toward 0 K.** Measured on an L40S, STORMM
+`84e97db`.
+
+Phase B: JAC/DHFR cooled from ~300 K to ~37 K in 9.5 ps, kinetic energy decaying
+monotonically 9937 -> 1.7 kcal/mol at about 0.91 ps^-1, which matches
+`default_langevin_frequency` (0.001 fs^-1 = 1 ps^-1).
+
+A one-knob-at-a-time probe on ubiquitin (4000 steps each) isolates it:
+
+| Thermostat | KE(0) -> KE(end) | Behaviour |
+|---|---|---|
+| NVE, `ntt=0` | 1666 -> 2851 | holds, plateaus |
+| Langevin, `ntt=3`, default gamma | 1675 -> 118 | collapses |
+| Langevin, `gamma_ln=1.0` | 745 -> 0.1 | collapses faster |
+| Langevin, `gamma_ln=0.01` | 1660 -> 2.0 | collapses |
+| Andersen, `ntt=2` | 1676 -> 2777 | holds, plateaus |
+| Berendsen, `ntt=1` | 1676 -> 2834 | holds, plateaus |
+
+Two things make this conclusive rather than suggestive. The collapse rate scales
+monotonically with `gamma_ln`, exactly as friction without fluctuation-dissipation
+predicts. And it reproduces with `rigid_geom off`, so it is not an interaction with
+the constraint solver. NVE, Andersen and Berendsen all converge to the same ~2800
+plateau, so the integrator and the PME forces are fine — this is specific to Langevin.
+
+Ruled out as causes, by reading source: the `tevo_start`/`tevo_end` defaults of 0
+correctly yield a constant `temp0` target (the `>=` branch in
+`src/Trajectory/thermostat.tpp:106` fires immediately, no degenerate division), and
+the RNG cache defaults are sane (`tcache_depth` 1, seed 1329440765, config "single").
+
+**Workaround: use `ntt=2` (Andersen).** It is a legitimate canonical thermostat.
+Berendsen also holds energy but does not sample the canonical ensemble correctly
+and should not be used for production IDR sampling.
+
+**This is worth reporting upstream to Psivant.** Langevin is the default choice for
+most production MD and the failure is silent — the run exits 0, writes a trajectory,
+and looks superficially fine. Anyone who does not check the kinetic energy would
+publish a frozen trajectory.
 
 ### Blockers
 

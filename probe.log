@@ -1,0 +1,37 @@
+✓ Initialized. View run at 
+https://modal.com/apps/toposbio/main/ap-B8fQT9RbvZhnFEr19ngadc
+✓ Created objects.
+├── 🔨 Created mount /Users/amir/Documents/Github/stormm-modal/stormm_modal.py
+├── 🔨 Created mount runs.toml
+├── 🔨 Created function run_dynamics.
+└── 🔨 Created function smoke.
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.4.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+
+==============================================================================
+run                                  rc    wall_s  peak_MiB
+------------------------------------------------------------------------------
+probe-nve                             0       1.6         7
+probe-langevin-default                0       1.4         7
+probe-langevin-gamma1                 0       1.4         7
+probe-langevin-gamma01                0       1.4         7
+probe-andersen                        0       1.4         7
+probe-berendsen                       0       1.4         7
+probe-langevin-norigid                0       1.4         7
+==============================================================================
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/toposbio/main/ap-B8fQT9RbvZhnFEr19ngadc
